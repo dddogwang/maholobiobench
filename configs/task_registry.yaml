@@ -1,0 +1,714 @@
+version: 0.2
+benchmark: MaholoBioBench
+date: 2026-06-08
+status: draft
+notes: >
+  Phase B registry using benchmark-style task families, instances, and
+  variations. Concrete names such as ReachPipette are retained as instances
+  instead of top-level benchmark tasks.
+
+defaults:
+  control_freq: 50
+  horizon: 1000
+  controller: OSC_POSE
+  observation_modes:
+    - state
+    - image
+    - hybrid
+  cameras:
+    - frontview
+    - agentview
+  robot_variants:
+    - MaholoRight
+    - MaholoLeft
+    - MaholoWithRight
+    - MaholoWithLeft
+    - Maholo
+
+phase_b_v0_1:
+  task_families:
+    - ReachTargetPose
+    - GraspLabObject
+    - TransportHeldObject
+    - OpenArticulatedEquipment
+    - RetrieveContainer
+    - TransferLiquid
+    - RetrieveAndTransferSample
+    - PrepareDilutionSeries
+
+task_families:
+  - family_id: ReachTargetPose
+    level: 1
+    category: manipulation_primitive
+    summary: Move an end-effector to a target pose defined by a lab object affordance or explicit pose.
+    existing_env_candidates:
+      - MaholoLaboratory_eefR_Move2Pipette
+      - MaholoSingleLaboratory_eefR_Move2Pipette
+      - MaholoLaboratory_eefL_Move2Pipette
+      - MaholoSingleLaboratory_eefL_Move2Pipette
+    success:
+      position_error_m_lte: 0.02
+      orientation_error_rad_lte: 0.05
+      collision_free: true
+    metrics:
+      - task_success
+      - final_position_error
+      - final_orientation_error
+      - collision_count
+      - episode_steps
+    instances:
+      - instance_id: ReachPipetteGraspPose
+        phase: B
+        objects: [pipette]
+        goal: Reach the pipette grasp affordance.
+      - instance_id: ReachTubePose
+        phase: future
+        objects: [tube_1p5ml]
+        goal: Reach a tube grasp or access pose.
+      - instance_id: ReachEquipmentHandle
+        phase: B
+        equipment: [cool_incubator_4c, deep_freezer, co2_incubator]
+        goal: Reach a handle affordance on articulated equipment.
+      - instance_id: ReachRackSlot
+        phase: future
+        objects: [tube_rack, tip_rack, plate_rack]
+        goal: Reach a target rack slot.
+    variations:
+      - target_object_type
+      - target_pose
+      - target_affordance
+      - left_or_right_arm
+      - camera_view
+      - object_layout
+      - clutter_level
+
+  - family_id: GraspLabObject
+    level: 1
+    category: manipulation_primitive
+    summary: Grasp a lab object with a stable affordance-aware grasp.
+    existing_env_candidates:
+      - MaholoLaboratory_eefR_Grip2Pipette
+      - MaholoSingleLaboratory_eefR_Grip2Pipette
+    success:
+      grasp_detected: true
+      object_displacement_m_lte: 0.015
+      collision_free: true
+    metrics:
+      - task_success
+      - grasp_success
+      - object_displacement
+      - collision_count
+      - episode_steps
+    instances:
+      - instance_id: GraspPipette
+        phase: B
+        objects: [pipette]
+        goal: Grasp a pipette without disturbing its rack pose.
+      - instance_id: GraspTube
+        phase: future
+        objects: [tube_1p5ml, tube_15ml, tube_50ml]
+        goal: Grasp a tube from a rack or workspace.
+      - instance_id: GraspPlate
+        phase: future
+        objects: [pcr_plate, culture_plate]
+        goal: Grasp or support a plate from a rack or deck.
+      - instance_id: GraspBottle
+        phase: future
+        objects: [bottle, reagent_bottle]
+        goal: Grasp a reagent bottle.
+      - instance_id: GraspLidOrCap
+        phase: future
+        objects: [tube_cap, plate_lid, tip_box_lid]
+        goal: Grasp an openable lid or cap.
+    variations:
+      - object_type
+      - object_pose
+      - rack_slot
+      - grasp_affordance
+      - left_or_right_arm
+      - object_mass
+      - friction
+
+  - family_id: TransportHeldObject
+    level: 1
+    category: manipulation_primitive
+    summary: Move a grasped lab object from a source pose to a target pose while avoiding collision and preserving orientation constraints.
+    existing_env_candidates:
+      - MaholoLaboratory_eefR_Move2Tube
+      - MaholoSingleLaboratory_eefR_Move2Tube
+    success:
+      target_pose_error_m_lte: 0.02
+      orientation_error_rad_lte: 0.08
+      collision_free: true
+    metrics:
+      - task_success
+      - target_pose_error
+      - final_orientation_error
+      - trajectory_smoothness
+      - collision_count
+    instances:
+      - instance_id: MovePipetteToTube
+        phase: B
+        objects: [pipette, tube_1p5ml]
+        goal: Move a held pipette tip above a target tube.
+      - instance_id: MoveTubeToRack
+        phase: future
+        objects: [tube_1p5ml, tube_rack]
+        goal: Move a tube into a specified rack slot.
+      - instance_id: MoveTubeToWorkbench
+        phase: future
+        objects: [tube_1p5ml]
+        goal: Move a tube from storage or rack to the workspace.
+      - instance_id: MovePlateToDevice
+        phase: future
+        objects: [pcr_plate, culture_plate]
+        equipment: [thermal_cycler, co2_incubator]
+        goal: Move a plate to a target device.
+      - instance_id: MovePipetteToRack
+        phase: future
+        objects: [pipette, pipette_rack]
+        goal: Return a pipette to the rack.
+    variations:
+      - source_pose
+      - target_pose
+      - held_object_type
+      - orientation_constraint
+      - obstacle_layout
+      - travel_distance
+
+  - family_id: OpenArticulatedEquipment
+    level: 1
+    category: equipment_interaction
+    summary: Open or close a door, cover, drawer, or lid on lab equipment.
+    existing_env_candidates:
+      - MaholoSingleLaboratory_OpenCoolIncubator
+      - MaholoSingleLaboratory_OpenDeepFreezer
+      - MaholoSingleLaboratory_OpenCO2Incubator
+    success:
+      target_open_angle_reached: true
+      collision_free: true
+    metrics:
+      - task_success
+      - door_open_angle
+      - handle_distance
+      - collision_count
+      - episode_steps
+    instances:
+      - instance_id: OpenCoolIncubator
+        phase: B
+        equipment: [cool_incubator_4c]
+        goal: Open the cool incubator door.
+      - instance_id: OpenDeepFreezer
+        phase: B
+        equipment: [deep_freezer]
+        goal: Open the deep freezer door.
+      - instance_id: OpenCO2Incubator
+        phase: future
+        equipment: [co2_incubator]
+        goal: Open the CO2 incubator door.
+      - instance_id: CloseStorageDoor
+        phase: future
+        equipment: [cool_incubator_4c, deep_freezer, co2_incubator]
+        goal: Close a storage door to the required final angle.
+      - instance_id: OpenThermalCyclerLid
+        phase: future
+        equipment: [thermal_cycler]
+        goal: Open a thermal cycler lid.
+      - instance_id: OpenTubeRackCover
+        phase: future
+        equipment: [tube_storage, chip_box]
+        goal: Open or remove a cover.
+    variations:
+      - equipment_type
+      - initial_open_angle
+      - target_open_angle
+      - handle_pose
+      - approach_direction
+      - friction
+      - latch_state
+
+  - family_id: PressOrToggleInstrumentControl
+    level: 1
+    category: equipment_interaction
+    summary: Press, toggle, or rotate a physical control on laboratory equipment.
+    phase: future
+    success:
+      control_state_reached: true
+      collision_free: true
+    metrics:
+      - task_success
+      - control_state_error
+      - contact_force_proxy
+      - collision_count
+    instances:
+      - instance_id: PressMixerButton
+        equipment: [vortex_mixer, microtube_mixer]
+      - instance_id: ToggleCentrifugeOrMixerSwitch
+        equipment: [vortex_mixer, microtube_mixer]
+      - instance_id: AdjustInstrumentDial
+        equipment: [block_thermostatic_bath, cool_block_bath]
+    variations:
+      - control_type
+      - target_state
+      - approach_pose
+      - force_threshold
+
+  - family_id: MountDisposableTip
+    level: 2
+    category: bio_lab_skill
+    summary: Mount a clean disposable pipette tip and update tip state.
+    phase: future
+    protocol_entities:
+      - pipette_state
+      - container_state
+    success:
+      tip_attached: true
+      contamination_violation_count_eq: 0
+    metrics:
+      - task_success
+      - tip_attachment_success
+      - tip_reuse_violation_count
+      - contamination_violation_count
+    instances:
+      - instance_id: MountSingleTip
+        objects: [pipette, tip_rack]
+      - instance_id: MountMultiChannelTip
+        objects: [viaflo_8ch, tip_rack]
+    variations:
+      - tip_rack_slot
+      - pipette_type
+      - tip_size
+      - approach_pose
+
+  - family_id: EjectDisposableTip
+    level: 2
+    category: bio_lab_skill
+    summary: Eject or discard a used disposable tip.
+    phase: future
+    protocol_entities:
+      - pipette_state
+      - contamination_state
+    success:
+      tip_attached: false
+      used_tip_discarded: true
+    metrics:
+      - task_success
+      - tip_ejection_success
+      - contamination_violation_count
+    instances:
+      - instance_id: EjectTipToWaste
+        objects: [pipette, waste_container]
+      - instance_id: EjectMultiChannelTips
+        objects: [viaflo_8ch, waste_container]
+    variations:
+      - waste_pose
+      - pipette_type
+      - tip_state
+
+  - family_id: RetrieveContainer
+    level: 2
+    category: bio_lab_skill
+    summary: Retrieve the requested sample container from storage, rack, or device.
+    existing_env_candidates:
+      - MaholoSingleLaboratory_OpenCoolIncubator
+      - MaholoSingleLaboratory_OpenDeepFreezer
+    protocol_entities:
+      - container_state
+      - sample_state
+      - equipment_state
+    success:
+      correct_sample_id: true
+      container_pose_error_m_lte: 0.02
+      wrong_sample_count_eq: 0
+      collision_free: true
+    metrics:
+      - task_success
+      - sample_identity_accuracy
+      - container_pose_error
+      - wrong_sample_count
+      - protocol_completion_rate
+      - collision_count
+    instances:
+      - instance_id: RetrieveTubeFromCoolIncubator
+        phase: B
+        objects: [tube_1p5ml]
+        equipment: [cool_incubator_4c]
+      - instance_id: RetrieveTubeFromDeepFreezer
+        phase: future
+        objects: [tube_1p5ml]
+        equipment: [deep_freezer]
+      - instance_id: RetrieveTubeFromRack
+        phase: B
+        objects: [tube_1p5ml, tube_rack]
+      - instance_id: RetrievePlateFromIncubator
+        phase: future
+        objects: [culture_plate]
+        equipment: [co2_incubator]
+      - instance_id: RetrieveTipBox
+        phase: future
+        objects: [tip_box]
+    variations:
+      - container_type
+      - sample_id
+      - storage_location
+      - rack_slot
+      - requested_vs_distractor_samples
+      - open_or_closed_storage
+
+  - family_id: PlaceContainerInStorage
+    level: 2
+    category: bio_lab_skill
+    summary: Place a container into a rack, incubator, freezer, or device while updating location and temperature-zone state.
+    phase: future
+    protocol_entities:
+      - container_state
+      - sample_state
+      - equipment_state
+    success:
+      correct_location: true
+      correct_temperature_zone: true
+      collision_free: true
+    metrics:
+      - task_success
+      - container_pose_error
+      - temperature_zone_violation_count
+      - collision_count
+    instances:
+      - instance_id: PlaceTubeInRack
+      - instance_id: PlaceTubeInFreezer
+      - instance_id: PlacePlateInCO2Incubator
+      - instance_id: PlacePCRPlateInThermalCycler
+    variations:
+      - target_storage
+      - target_slot
+      - sample_temperature_requirement
+      - storage_open_state
+
+  - family_id: TransferLiquid
+    level: 2
+    category: bio_lab_skill
+    summary: Transfer symbolic liquid volume from one container to another using a pipette.
+    existing_env_candidates:
+      - MaholoLaboratory_eefR_Move2Pipette
+      - MaholoLaboratory_eefR_Move2Tube
+    protocol_entities:
+      - container_state
+      - sample_state
+      - pipette_state
+    success:
+      target_volume_error_ul_lte: 2.0
+      sample_identity_consistent: true
+      contamination_violation_count_eq: 0
+    metrics:
+      - task_success
+      - volume_error_ul
+      - relative_volume_error
+      - sample_identity_accuracy
+      - contamination_violation_count
+      - tip_reuse_violation_count
+    instances:
+      - instance_id: TubeToTubeTransfer
+        phase: B
+        objects: [pipette, source_tube, target_tube]
+      - instance_id: TubeToPlateTransfer
+        phase: future
+        objects: [pipette, source_tube, pcr_plate]
+      - instance_id: PlateToTubeTransfer
+        phase: future
+        objects: [pipette, pcr_plate, target_tube]
+      - instance_id: MultiChannelPlateTransfer
+        phase: future
+        objects: [viaflo_8ch, pcr_plate, tip_rack]
+      - instance_id: ReagentAddition
+        phase: future
+        objects: [reagent_bottle, target_tube]
+    variations:
+      - source_container_type
+      - target_container_type
+      - target_volume_ul
+      - sample_id
+      - pipette_type
+      - tip_state
+      - source_target_distance
+
+  - family_id: MixSample
+    level: 2
+    category: bio_lab_skill
+    summary: Mix a sample by pipetting, shaking, vortexing, or device operation.
+    phase: future
+    protocol_entities:
+      - sample_state
+      - container_state
+      - equipment_state
+    success:
+      mixed_state_reached: true
+      contamination_violation_count_eq: 0
+    metrics:
+      - task_success
+      - mix_completion
+      - contamination_violation_count
+      - volume_error_ul
+    instances:
+      - instance_id: PipetteMixTube
+      - instance_id: VortexTube
+      - instance_id: MicrotubeMixerRun
+      - instance_id: PlateMixByPipetting
+    variations:
+      - mix_method
+      - repetitions
+      - volume_ul
+      - equipment_type
+
+  - family_id: CapOrSealContainer
+    level: 2
+    category: bio_lab_skill
+    summary: Open, close, cap, uncap, seal, or unseal lab containers.
+    phase: future
+    protocol_entities:
+      - container_state
+      - contamination_state
+    success:
+      container_open_state_correct: true
+      contamination_violation_count_eq: 0
+    metrics:
+      - task_success
+      - cap_state_success
+      - container_displacement
+      - contamination_violation_count
+    instances:
+      - instance_id: OpenTubeCap
+      - instance_id: CloseTubeCap
+      - instance_id: RemovePlateLid
+      - instance_id: PlacePlateLid
+      - instance_id: OpenTipBoxLid
+      - instance_id: CloseTipBoxLid
+    variations:
+      - container_type
+      - cap_type
+      - initial_open_state
+      - contamination_threshold
+
+  - family_id: ScanOrInspectSample
+    level: 2
+    category: bio_lab_skill
+    summary: Move a sample to an imaging or sensing pose and update observation state.
+    phase: future
+    protocol_entities:
+      - sample_state
+      - equipment_state
+    success:
+      sample_in_inspection_pose: true
+      observation_recorded: true
+    metrics:
+      - task_success
+      - inspection_pose_error
+      - observation_quality_proxy
+    instances:
+      - instance_id: MoveTubeToCameraPose
+      - instance_id: MovePlateToImagingPose
+      - instance_id: BarcodeOrLabelInspection
+    variations:
+      - sensor_type
+      - sample_container
+      - target_view
+
+  - family_id: RetrieveAndTransferSample
+    level: 3
+    category: long_horizon_protocol
+    summary: Retrieve a requested sample and transfer a symbolic liquid volume to a target container.
+    phase: B
+    composed_of:
+      - OpenArticulatedEquipment
+      - RetrieveContainer
+      - MountDisposableTip
+      - TransferLiquid
+      - PlaceContainerInStorage
+    protocol:
+      - open_storage
+      - retrieve_correct_sample
+      - mount_clean_tip
+      - aspirate_source_volume
+      - dispense_target_volume
+      - return_sample
+      - close_storage
+    success:
+      protocol_completion_rate_gte: 1.0
+      target_volume_error_ul_lte: 2.0
+      wrong_sample_count_eq: 0
+      contamination_violation_count_eq: 0
+    metrics:
+      - task_success
+      - protocol_completion_rate
+      - progress_score
+      - volume_error_ul
+      - wrong_sample_count
+      - contamination_violation_count
+      - episode_steps
+    instances:
+      - instance_id: RetrieveCoolSampleAndTransfer
+        phase: B
+        objects: [pipette, tube_1p5ml, target_tube]
+        equipment: [cool_incubator_4c]
+        goal: Retrieve the requested cooled sample and transfer a target symbolic volume.
+      - instance_id: RetrieveRackSampleAndTransfer
+        phase: B
+        objects: [pipette, source_tube, target_tube, tube_rack]
+        goal: Retrieve the requested rack sample and transfer a target symbolic volume.
+      - instance_id: RetrieveFreezerSampleAndTransfer
+        phase: future
+        objects: [pipette, tube_1p5ml, target_tube]
+        equipment: [deep_freezer]
+        goal: Retrieve a freezer sample and transfer a target symbolic volume.
+    variations:
+      - storage_type
+      - sample_id
+      - target_container_type
+      - volume_ul
+      - distractor_samples
+
+  - family_id: PrepareDilutionSeries
+    level: 3
+    category: long_horizon_protocol
+    summary: Prepare a symbolic serial dilution across multiple containers.
+    phase: B
+    composed_of:
+      - MountDisposableTip
+      - TransferLiquid
+      - MixSample
+      - EjectDisposableTip
+    protocol:
+      - mount_clean_tip
+      - transfer_stock_to_tube_1
+      - mix_tube_1
+      - transfer_tube_1_to_tube_2
+      - mix_tube_2
+      - transfer_tube_2_to_tube_3
+    success:
+      protocol_completion_rate_gte: 1.0
+      cumulative_volume_error_ul_lte: 5.0
+      wrong_sample_count_eq: 0
+      contamination_violation_count_eq: 0
+    metrics:
+      - task_success
+      - protocol_completion_rate
+      - progress_score
+      - cumulative_volume_error_ul
+      - sample_identity_accuracy
+      - contamination_violation_count
+    instances:
+      - instance_id: ThreeStepTubeDilution
+        phase: B
+        objects: [pipette, stock_tube, dilution_tube_1, dilution_tube_2, dilution_tube_3]
+        goal: Prepare a three-step symbolic serial dilution across tubes.
+      - instance_id: PlateColumnDilution
+        phase: B
+        objects: [pipette, stock_tube, pcr_plate]
+        goal: Prepare a symbolic dilution series across a plate column.
+      - instance_id: MultiChannelDilutionSeries
+        phase: future
+        objects: [viaflo_8ch, stock_tube, pcr_plate]
+        goal: Prepare a symbolic dilution series with a multichannel pipette.
+    variations:
+      - dilution_factor
+      - number_of_steps
+      - source_volume
+      - tip_change_policy
+
+  - family_id: PipettingWorkflowWithTipChange
+    level: 3
+    category: long_horizon_protocol
+    summary: Perform multiple liquid transfers with required tip changes between samples.
+    phase: future
+    composed_of:
+      - MountDisposableTip
+      - TransferLiquid
+      - EjectDisposableTip
+    metrics:
+      - protocol_completion_rate
+      - tip_reuse_violation_count
+      - contamination_violation_count
+      - volume_error_ul
+    variations:
+      - number_of_samples
+      - tip_change_rule
+      - target_layout
+
+  - family_id: SampleStorageProtocol
+    level: 3
+    category: long_horizon_protocol
+    summary: Move samples between workbench, rack, freezer, and incubator while maintaining identity and temperature constraints.
+    phase: future
+    composed_of:
+      - OpenArticulatedEquipment
+      - RetrieveContainer
+      - PlaceContainerInStorage
+    metrics:
+      - protocol_completion_rate
+      - sample_identity_accuracy
+      - temperature_zone_violation_count
+      - exposure_time_s
+    variations:
+      - storage_sequence
+      - sample_temperature_requirement
+      - number_of_samples
+
+  - family_id: MediaChangeSimplified
+    level: 3
+    category: long_horizon_protocol
+    summary: Simplified cell culture media change using symbolic liquid state.
+    phase: future
+    composed_of:
+      - RetrieveContainer
+      - TransferLiquid
+      - MixSample
+      - PlaceContainerInStorage
+    metrics:
+      - protocol_completion_rate
+      - media_volume_error_ul
+      - contamination_violation_count
+      - incubator_state_success
+    variations:
+      - plate_type
+      - media_volume
+      - incubator_type
+
+  - family_id: PCRPlatePreparation
+    level: 3
+    category: long_horizon_protocol
+    summary: Prepare a PCR plate with samples and reagents using symbolic volumes.
+    phase: future
+    composed_of:
+      - MountDisposableTip
+      - TransferLiquid
+      - EjectDisposableTip
+      - PlaceContainerInStorage
+    metrics:
+      - protocol_completion_rate
+      - well_assignment_accuracy
+      - volume_error_ul
+      - contamination_violation_count
+    variations:
+      - plate_layout
+      - number_of_wells
+      - reagent_count
+      - tip_change_policy
+
+  - family_id: DeviceIncubationWorkflow
+    level: 3
+    category: long_horizon_protocol
+    summary: Place prepared samples into incubator, thermal cycler, freezer, or bath and enforce time/temperature state.
+    phase: future
+    composed_of:
+      - OpenArticulatedEquipment
+      - PlaceContainerInStorage
+      - PressOrToggleInstrumentControl
+    metrics:
+      - protocol_completion_rate
+      - equipment_state_error
+      - timing_violation_count
+      - temperature_zone_violation_count
+    variations:
+      - device_type
+      - target_temperature
+      - incubation_time
+      - container_type

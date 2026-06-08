@@ -1,0 +1,87 @@
+version: 0.1
+schema_name: MaholoBioBenchEpisodeOutput
+
+episode_directory:
+  required_files:
+    - task_config.yaml
+    - observations.npz
+    - actions.csv
+    - joint.csv
+    - protocol_state.jsonl
+    - metrics.csv
+    - summary.json
+  optional_files:
+    - frontview.mp4
+    - agentview.mp4
+    - birdview.mp4
+    - sideview.mp4
+    - jbi_output.JBI
+
+summary_json:
+  required_fields:
+    episode_id: string
+    task_id: string
+    task_level: int
+    seed: int
+    method: string
+    task_success: bool
+    protocol_completion_rate: float
+    progress_score: float
+    episode_steps: int
+    collision_count: int
+    joint_limit_violation_count: int
+    volume_error_ul: float_or_null
+    contamination_violation_count: int
+    wrong_sample_count: int
+    jbi_generation_success: bool_or_null
+
+metrics_csv_columns:
+  - step
+  - task_success
+  - progress_score
+  - protocol_completion_rate
+  - final_position_error
+  - final_orientation_error
+  - collision_count
+  - joint_limit_violation_count
+  - volume_error_ul
+  - contamination_violation_count
+  - wrong_sample_count
+
+actions_csv:
+  allowed_action_modes:
+    - OSC_POSE
+    - JOINT_POSITION
+    - JOINT_VELOCITY
+  recommended_columns_osc_pose:
+    - step
+    - dx
+    - dy
+    - dz
+    - droll
+    - dpitch
+    - dyaw
+    - gripper
+  recommended_columns_joint_position:
+    - step
+    - joint_0
+    - joint_1
+    - joint_2
+    - joint_3
+    - joint_4
+    - joint_5
+    - joint_6
+    - joint_7
+    - gripper_0
+
+protocol_state_jsonl:
+  one_json_object_per_step: true
+  required_top_level_fields:
+    - step
+    - time_s
+    - containers
+    - samples
+    - pipettes
+    - equipment
+    - protocol
+

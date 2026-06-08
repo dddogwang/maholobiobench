@@ -1,0 +1,115 @@
+version: 0.1
+schema_name: MaholoBioBenchProtocolState
+
+container_state:
+  required:
+    container_id: string
+    container_type: string
+    pose: list_float_7
+    is_open: bool
+    current_location: string
+    sample_id: string_or_null
+    volume_ul: float
+    contaminated: bool
+    temperature_zone: string
+  allowed_locations:
+    - rack
+    - freezer
+    - incubator
+    - workbench
+    - gripper
+    - unknown
+  allowed_temperature_zones:
+    - room
+    - cool_incubator
+    - deep_freezer
+    - co2_incubator
+    - unknown
+
+sample_state:
+  required:
+    sample_id: string
+    sample_type: string
+    volume_ul: float
+    concentration: float_or_null
+    container_id: string
+    exposure_time_s: float
+    contaminated: bool
+
+pipette_state:
+  required:
+    pipette_id: string
+    held_by: string_or_null
+    tip_attached: bool
+    tip_used: bool
+    tip_sample_id: string_or_null
+    current_volume_ul: float
+    max_volume_ul: float
+  allowed_holders:
+    - right_gripper
+    - left_gripper
+    - none
+
+equipment_state:
+  required:
+    equipment_id: string
+    equipment_type: string
+    door_open_angle: float
+    is_open: bool
+    temperature: float_or_null
+    contains: list_string
+
+protocol_state:
+  required:
+    protocol_id: string
+    current_step: string
+    completed_steps: list_string
+    remaining_steps: list_string
+    violations: list_object
+    elapsed_time_s: float
+    progress_score: float
+  violation_types:
+    - wrong_sample
+    - wrong_volume
+    - contaminated_tip_reuse
+    - surface_contact_contamination
+    - open_container_exposure
+    - wrong_temperature_zone
+    - robot_collision
+    - joint_limit
+    - step_order_error
+
+symbolic_liquid_rules:
+  aspirate_success_requires:
+    - clean_tip_attached
+    - tip_inside_source_zone
+    - source_volume_sufficient
+    - pipette_volume_capacity_sufficient
+  aspirate_updates:
+    - source_volume_decreases
+    - pipette_volume_increases
+    - pipette_tip_sample_id_set
+    - tip_used_true
+  dispense_success_requires:
+    - pipette_contains_volume
+    - tip_inside_target_zone
+    - target_capacity_sufficient
+  dispense_updates:
+    - pipette_volume_decreases
+    - target_volume_increases
+    - target_sample_id_updated
+
+contamination_rules:
+  - rule_id: reuse_tip_across_samples
+    trigger: tip_used_and_tip_sample_id_differs_from_current_sample
+    violation_type: contaminated_tip_reuse
+  - rule_id: tip_contact_non_target_surface
+    trigger: pipette_tip_contacts_non_target_surface
+    violation_type: surface_contact_contamination
+  - rule_id: open_container_exposure_timeout
+    trigger: open_container_exposure_time_exceeds_threshold
+    violation_type: open_container_exposure
+  - rule_id: wrong_temperature_storage
+    trigger: sample_stored_in_wrong_temperature_zone
+    violation_type: wrong_temperature_zone
+
