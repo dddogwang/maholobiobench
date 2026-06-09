@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="academic-paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maholo 环境资产可视化清单</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<link rel="stylesheet" href="assets/page_rail.css">
+<style>
+  :root {
+    --ink: var(--text-1);
+    --muted: var(--text-3);
+    --line: var(--border);
+    --done: var(--good);
+    --todo: var(--bad);
+    --asset-header-height: 184px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding-left: 0 !important;
+    background: var(--bg);
+    color: var(--ink);
+    letter-spacing: 0;
+    overflow: hidden;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: none;
+    overflow: hidden;
+    width: 100%;
+    min-height: 0;
+    height: 100%;
+    padding: 72px 96px;
+    background: transparent;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--asset-header-height) minmax(0, 1fr) auto;
+    justify-content: stretch;
+    justify-items: stretch;
+    align-content: start;
+    gap: 22px;
+    transition: none;
+  }
+  .slide.is-active { opacity: 1; pointer-events: auto; transform: none; z-index: 2; }
+  .slide.is-prev { transform: none; }
+  .deck {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    contain: layout size style;
+  }
+  header {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    align-items: end;
+    gap: 30px;
+    border-bottom: 1px solid var(--line);
+    height: var(--asset-header-height);
+    min-height: var(--asset-header-height);
+    padding-top: 46px;
+    padding-bottom: 26px;
+    overflow: visible;
+  }
+  header > div:first-child {
+    align-self: end;
+    justify-self: start;
+    width: min(820px, 100%);
+    text-align: left;
+  }
+  .kicker {
+    margin: 0 0 10px;
+    font-size: 21px;
+    line-height: 1.15;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-style: italic;
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(40px, 3.4vw, 60px);
+    line-height: 1.06;
+    font-weight: 700;
+  }
+  .lead {
+    margin: 0;
+    color: var(--muted);
+    font-size: clamp(16px, 1.35vw, 23px);
+    line-height: 1.48;
+  }
+  .main {
+    display: grid;
+    grid-template-columns: 410px 1fr;
+    gap: 28px;
+    min-height: 0;
+  }
+  .left {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
+  .section-title {
+    font-size: 15px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .inventory-list {
+    display: grid;
+    gap: 14px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 12px;
+    align-items: start;
+    padding: 14px 0;
+    border-top: 1px solid var(--line);
+  }
+  .row .num {
+    font-weight: 900;
+    color: var(--muted);
+  }
+  .row h2 {
+    margin: 0 0 5px;
+    font-size: 20px;
+    line-height: 1.16;
+  }
+  .row p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.38;
+    color: var(--muted);
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-width: 76px;
+    padding: 7px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .04em;
+    border: 1px solid currentColor;
+  }
+  .badge.done { color: var(--done); background: color-mix(in srgb, var(--done) 8%, transparent); }
+  .badge.partial { color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); }
+  .badge.todo { color: var(--todo); background: color-mix(in srgb, var(--todo) 8%, transparent); }
+  .viewer-area {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 16px;
+  }
+  .scene-shell {
+    min-height: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .scene-stage {
+    min-height: 0;
+    height: min(74vh, 760px);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .scene-stage canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .scene-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 14px;
+    min-height: 32px;
+  }
+  .legend strong { color: var(--ink); }
+  .legend span {
+    white-space: nowrap;
+  }
+  .asset-tabs {
+    margin-left: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .asset-tab {
+    appearance: none;
+    border: 0;
+    border-radius: 6px;
+    padding: 7px 10px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab-count {
+    margin-left: 6px;
+    color: color-mix(in srgb, currentColor 58%, transparent);
+    font-weight: 900;
+  }
+  .asset-tab.is-active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .model-grid {
+    --model-grid-gap: 14px;
+    --model-card-min-width: 220px;
+    min-height: 0;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+    padding-right: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(var(--model-card-min-width), 1fr));
+    grid-auto-rows: 220px;
+    gap: var(--model-grid-gap);
+    width: 100%;
+    align-content: start;
+  }
+  .model-slot {
+    width: 100%;
+    min-width: 0;
+    height: 220px;
+    min-height: 220px;
+    contain: layout size;
+  }
+  .model {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    height: 220px;
+    display: grid;
+    grid-template-rows: 132px auto;
+    overflow: hidden;
+    contain: layout paint size;
+    transition: opacity .16s ease, filter .16s ease, border-color .16s ease;
+  }
+  .model-slot.is-hidden .model {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .model canvas {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    height: 132px;
+    display: block;
+    background: var(--surface);
+  }
+  .model-preview {
+    width: 100%;
+    height: 132px;
+    display: grid;
+    place-items: center;
+    padding: 12px;
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 58%),
+      var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+  }
+  .model-meta {
+    padding: 12px 12px 13px;
+    border-top: 1px solid var(--line);
+  }
+  .model-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .model h3 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.18;
+  }
+  .mini {
+    flex: 0 0 auto;
+    padding: 4px 7px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 900;
+  }
+  .mini.done { color: #fff; background: var(--done); }
+  .mini.todo { color: #fff; background: var(--todo); }
+  .model p {
+    margin: 8px 0 0;
+    font-size: 12px;
+    line-height: 1.35;
+    color: var(--muted);
+  }
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .warn {
+    color: var(--todo);
+    font-weight: 700;
+  }
+  #environment {
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: var(--asset-header-height) minmax(0, 1fr);
+    gap: 20px;
+  }
+  #environment header {
+    width: 100%;
+    grid-template-columns: 1fr;
+    align-items: end;
+    justify-items: start;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  #environment header > div,
+  #environment .kicker,
+  #environment h1 {
+    justify-self: start;
+    text-align: left;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  #environment header .lead,
+  #environment .left,
+  #environment .legend,
+  #environment footer {
+    display: none;
+  }
+  #environment .main {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  #environment .scene-shell {
+    min-height: 0;
+    height: 100%;
+    width: 100%;
+  }
+  #environment .scene-stage {
+    height: 100%;
+    width: 100%;
+    min-height: 0;
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  #assets .main {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  #assets header {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+  #assets footer {
+    min-height: 28px;
+    overflow: hidden;
+  }
+  @media (max-width: 1100px) {
+    header, .main { grid-template-columns: 1fr; }
+    #assets header { grid-template-columns: 1fr; }
+    .model-grid {
+      --model-card-min-width: 280px;
+      grid-template-columns: repeat(2, minmax(0, calc((100% - 14px) / 2)));
+      max-width: none;
+      margin-inline: 0;
+      grid-auto-rows: 252px;
+    }
+    .model-slot,
+    .model {
+      height: 252px;
+      min-height: 252px;
+    }
+    .model {
+      grid-template-rows: 156px auto;
+    }
+    .model canvas,
+    .model-preview {
+      height: 156px;
+    }
+  }
+  @media (max-width: 900px) {
+    body {
+      padding-top: 0;
+    }
+    :root {
+      --asset-header-height: 168px;
+    }
+    .slide {
+      padding: 48px 32px;
+    }
+    .deck {
+      inset: 0;
+    }
+    .asset-tabs {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    .scene-stage { height: 58vh; }
+    #environment .scene-stage { height: 100%; min-height: 68vh; }
+  }
+  @media (max-width: 640px) {
+    :root {
+      --asset-header-height: 154px;
+    }
+    .slide {
+      padding: 32px 20px;
+      gap: 16px;
+    }
+    .kicker {
+      font-size: 15px;
+    }
+    h1 {
+      font-size: 34px;
+    }
+    .model-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
+</head>
+<body class="asset-page">
+<nav class="page-rail" aria-label="页面导航">
+  <a href="index.html">总览</a>
+  <a href="env_assets.html" class="is-active">资产页</a>
+  <a href="research_introduction_legacy.html">旧版页</a>
+</nav>
+<div class="deck">
+<section class="slide is-active" id="environment" data-title="Environment">
+  <header>
+    <div>
+      <p class="kicker">MaholoBioBench · M0 Asset Inventory</p>
+      <h1>Maholo Laboratory 环境视角</h1>
+    </div>
+  </header>
+
+  <section class="main">
+    <section class="scene-shell">
+      <div class="scene-stage">
+        <canvas id="sceneCanvas"></canvas>
+      </div>
+    </section>
+  </section>
+</section>
+
+<section class="slide" id="assets">
+  <header>
+    <div>
+      <p class="kicker">MaholoBioBench · M0 Asset Inventory</p>
+      <h1>Maholo 资产清单</h1>
+    </div>
+  </header>
+
+  <section class="main">
+    <section class="viewer-area">
+      <div class="legend">
+        <div class="asset-tabs" aria-label="资产类别筛选">
+          <button class="asset-tab is-active" type="button" data-filter="all">全部<span class="tab-count">19</span></button>
+          <button class="asset-tab" type="button" data-filter="fixed">固定场景<span class="tab-count">9</span></button>
+          <button class="asset-tab" type="button" data-filter="movable">可移动物品<span class="tab-count">2</span></button>
+          <button class="asset-tab" type="button" data-filter="instrument">实验仪器<span class="tab-count">8</span></button>
+        </div>
+      </div>
+      <div class="model-grid" id="modelGrid"></div>
+    </section>
+  </section>
+
+  <footer>
+    <span>DONE / PARTIAL / NOT DONE</span>
+    <span>robosuite_maholo assets</span>
+  </footer>
+</section>
+
+</div>
+<script src="assets/runtime.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".deck > .slide").forEach((slide) => {
+    slide.style.transform = "none";
+    slide.style.transition = "none";
+  });
+});
+
+const ROOT = "";
+const SCENE_MODELS = [
+  { file: "assets/models/maholo.stl", color: [0.64, 0.58, 0.47], autoFit: true }
+];
+const MODELS = [
+  {
+    title: "Main workstation", category: "固定场景", status: "done",
+    note: "table_main；主操作工作台。",
+    color: [0.56, 0.49, 0.39],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_main.stl"]
+  },
+  {
+    title: "Side table R1 / FF", category: "固定场景", status: "done",
+    note: "table_side_R1_FF；右侧前方工作台。",
+    color: [0.52, 0.46, 0.37],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_side_R1_FF.stl"]
+  },
+  {
+    title: "Side table R2", category: "固定场景", status: "done",
+    note: "table_side_R2；右侧后方工作台。",
+    color: [0.50, 0.44, 0.36],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_side_R2.stl"]
+  },
+  {
+    title: "Incubator table", category: "固定场景", status: "done",
+    note: "table_incubator；培养箱设备台。",
+    color: [0.58, 0.51, 0.41],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_incubator.stl"]
+  },
+  {
+    title: "Pipette rack", category: "固定场景", status: "done",
+    note: "arena 静态 fixture；pipette 本体由 runtime object 加载。",
+    color: [0.44, 0.48, 0.54],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/SinglePipetteRack_4.stl"]
+  },
+  {
+    title: "1.5 ml tube rack", category: "固定场景", status: "done",
+    note: "有 visual 和分解 collision，可用于 slot / placement 定义。",
+    color: [0.38, 0.54, 0.58],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/1.5ml_tube_rack.stl"]
+  },
+  {
+    title: "Tube storage 48", category: "固定场景", status: "done",
+    note: "适合定义 sample storage 和 retrieve container 任务。",
+    color: [0.42, 0.56, 0.50],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/1.5ml_tube_storage48.stl"]
+  },
+  {
+    title: "Tip / chip box", category: "固定场景", status: "todo",
+    note: "几何存在；单个 tip 的 available / used / attached 状态未建模。",
+    color: [0.68, 0.54, 0.31],
+    files: [
+      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/ChipBOX_200μl.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/ChipBOX_5ml.stl"
+    ]
+  },
+  {
+    title: "固定工具组合", category: "固定场景", status: "done",
+    note: "Opener / Pipette_Push / Centrifuge_tool 当前是静态几何。",
+    color: [0.43, 0.43, 0.43],
+    files: [
+      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/Opener.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/Pipette_Push.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/Centrifuge_tool.stl"
+    ]
+  },
+  {
+    title: "P1000 pipette", category: "可移动物品", status: "done",
+    note: "4 个默认实例；free joint；64 个 collision mesh。",
+    color: [0.18, 0.50, 0.78],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/pipette/pipette.obj"]
+  },
+  {
+    title: "1.5 ml tube", category: "可移动物品", status: "done",
+    note: "8 个默认实例；free joint；可作为样品容器。",
+    color: [0.88, 0.30, 0.26],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/1.5ml_tube.stl"]
+  },
+  {
+    title: "4°C cool incubator", category: "可交互仪器", status: "done",
+    note: "body + door；已有 hinge 和开门任务。内部槽位 / 温度状态未完成。",
+    color: [0.67, 0.60, 0.48],
+    files: [
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/cool_incubator_4c/cool_incubator_4c_body_visual.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/cool_incubator_4c/cool_incubator_4c_door_visual.stl"
+    ]
+  },
+  {
+    title: "CO2 incubator", category: "可交互仪器", status: "done",
+    note: "outer door / inner door / latch 已有关节和多阶段任务。CO2 / 温度语义未完成。",
+    color: [0.66, 0.62, 0.52],
+    files: [
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_body_visual.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_outerdoor_visual.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_innerdoor_visual.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_innerlever_visual.stl"
+    ]
+  },
+  {
+    title: "Deep freezer", category: "可交互仪器", status: "done",
+    note: "body + door；已有 hinge 和开门任务。内部存储槽位未完成。",
+    color: [0.62, 0.66, 0.71],
+    files: [
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/deep_freezer/deepFreezer_body_visual.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/deep_freezer/deepFreezer_door_visual.stl"
+    ]
+  },
+  {
+    title: "Thermal cycler", category: "实验仪器", status: "todo",
+    note: "几何存在；lid joint、program/running state 未完成。",
+    color: [0.45, 0.45, 0.50],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/thermal_cycler/thermal_cycler.stl"]
+  },
+  {
+    title: "MX-307", category: "实验仪器", status: "todo",
+    note: "几何存在；运行模式和设备状态未完成。",
+    color: [0.52, 0.52, 0.47],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/mx307/mx307.stl"]
+  },
+  {
+    title: "Microtube mixer", category: "实验仪器", status: "todo",
+    note: "几何存在；mixing / running / duration 状态未完成。",
+    color: [0.42, 0.47, 0.58],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/microtube_mixer/microtube_mixer.stl"]
+  },
+  {
+    title: "Vortex mixer", category: "实验仪器", status: "todo",
+    note: "几何存在；press / activation 状态未完成。",
+    color: [0.38, 0.49, 0.62],
+    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/vortex_mixer/vortex_mixer.stl"]
+  },
+  {
+    title: "Block baths", category: "实验仪器", status: "todo",
+    note: "block thermostatic bath / cool block bath；温度和占用状态未完成。",
+    color: [0.52, 0.58, 0.52],
+    files: [
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/block_thermostatic_bath/block_thermostatic_bath.stl",
+      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/cool_block_bath/cool_block_bath.stl"
+    ]
+  }
+];
+
+const sceneCanvas = document.getElementById("sceneCanvas");
+if (sceneCanvas) createSceneViewer(sceneCanvas, SCENE_MODELS);
+
+const grid = document.getElementById("modelGrid");
+const tabs = document.querySelectorAll(".asset-tab");
+function assetGroup(category) {
+  if (category === "固定场景") return "fixed";
+  if (category === "可移动物品") return "movable";
+  return "instrument";
+}
+function loadAssetPreview(canvas) {
+  if (canvas.dataset.loaded === "1") return;
+  const spec = MODELS[Number(canvas.dataset.modelIndex)];
+  if (!spec || canvas.clientWidth === 0 || canvas.clientHeight === 0) return;
+  canvas.dataset.loaded = "1";
+  createViewer(canvas, spec);
+}
+function scanAssetPreviews() {
+  if (!grid) return;
+  for (const canvas of grid.querySelectorAll(".model canvas")) {
+    const rect = canvas.getBoundingClientRect();
+    const visible = rect.width > 0 && rect.height > 0 && rect.bottom >= 0 && rect.top <= window.innerHeight;
+    if (visible) loadAssetPreview(canvas);
+  }
+}
+function applyAssetFilter(filter) {
+  if (!grid) return;
+  let visibleIndex = 0;
+  for (const slot of modelSlots) {
+    const matches = filter === "all" || slot.dataset.group === filter;
+    slot.classList.toggle("is-hidden", !matches);
+    slot.style.order = matches ? String(visibleIndex++) : String(MODELS.length + Number(slot.dataset.index));
+  }
+  for (const tab of tabs) {
+    tab.classList.toggle("is-active", tab.dataset.filter === filter);
+  }
+  grid.scrollTop = 0;
+  requestAnimationFrame(scanAssetPreviews);
+}
+const previewObserver = "IntersectionObserver" in window
+  ? new IntersectionObserver((entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const canvas = entry.target;
+        observer.unobserve(canvas);
+        loadAssetPreview(canvas);
+      }
+    }, { root: grid, rootMargin: "220px 0px" })
+  : null;
+const modelCards = [];
+const modelSlots = Array.from({ length: MODELS.length }, (_, index) => {
+  const slot = document.createElement("div");
+  slot.className = "model-slot";
+  slot.dataset.index = String(index);
+  return slot;
+});
+for (let i = 0; i < MODELS.length; i++) {
+  const spec = MODELS[i];
+  const card = document.createElement("article");
+  card.className = "model";
+  card.dataset.group = assetGroup(spec.category);
+  modelSlots[i].dataset.group = card.dataset.group;
+  const canvas = document.createElement("canvas");
+  canvas.dataset.modelIndex = String(i);
+  const meta = document.createElement("div");
+  meta.className = "model-meta";
+  meta.innerHTML = `
+    <div class="model-top">
+      <h3>${spec.title}</h3>
+      <span class="mini ${spec.status === "done" ? "done" : "todo"}">${spec.status === "done" ? "DONE" : "NOT DONE"}</span>
+    </div>
+    <p><strong>${spec.category}</strong></p>`;
+  card.append(canvas, meta);
+  modelCards.push(card);
+  if (previewObserver) {
+    previewObserver.observe(canvas);
+  } else {
+    requestAnimationFrame(() => loadAssetPreview(canvas));
+  }
+  modelSlots[i].append(card);
+}
+grid.replaceChildren(...modelSlots);
+applyAssetFilter("all");
+for (const tab of tabs) {
+  tab.addEventListener("click", () => applyAssetFilter(tab.dataset.filter));
+}
+window.addEventListener("hashchange", () => requestAnimationFrame(scanAssetPreviews));
+window.addEventListener("resize", () => requestAnimationFrame(scanAssetPreviews));
+setTimeout(scanAssetPreviews, 80);
+setTimeout(scanAssetPreviews, 300);
+
+function createSceneViewer(canvas, specs) {
+  const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
+  if (!gl) return setCanvasMessage(canvas, "WebGL 不可用");
+
+  const program = makeProgram(gl);
+  const loc = {
+    pos: gl.getAttribLocation(program, "aPosition"),
+    normal: gl.getAttribLocation(program, "aNormal"),
+    mvp: gl.getUniformLocation(program, "uMVP"),
+    model: gl.getUniformLocation(program, "uModel"),
+    color: gl.getUniformLocation(program, "uColor"),
+    light: gl.getUniformLocation(program, "uLight")
+  };
+
+  let mesh = null;
+  Promise.all(specs.map(loadScenePart)).then(parts => {
+    mesh = combineMeshes(parts);
+    normalizeMesh(mesh);
+    mesh.positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.positions), gl.STATIC_DRAW);
+    mesh.normalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.normalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.normals), gl.STATIC_DRAW);
+  }).catch(err => {
+    console.warn("scene", err);
+    setCanvasMessage(canvas, "场景加载失败");
+  });
+
+  function draw(t) {
+    resizeCanvas(canvas);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    if (mesh) {
+      const aspect = canvas.width / canvas.height;
+      const frame = aspect >= 1 ? 1.28 : 1.58;
+      const proj = orthographic(-frame * aspect, frame * aspect, -frame, frame, 0.1, 20);
+      const azimuth = t * 0.00015 + 0.72;
+      const radius = 4.2;
+      const eye = [
+        Math.cos(azimuth) * radius,
+        Math.sin(Math.PI / 6) * radius,
+        Math.sin(azimuth) * radius
+      ];
+      const view = lookAt(eye, [0, 0, 0], [0, 1, 0]);
+      const model = identity();
+      const mvp = multiply(proj, multiply(view, model));
+      gl.useProgram(program);
+      gl.uniformMatrix4fv(loc.mvp, false, mvp);
+      gl.uniformMatrix4fv(loc.model, false, model);
+      gl.uniform3fv(loc.color, new Float32Array([0.64, 0.58, 0.47]));
+      gl.uniform3fv(loc.light, new Float32Array([0.45, 0.82, 0.58]));
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.positionBuffer);
+      gl.enableVertexAttribArray(loc.pos);
+      gl.vertexAttribPointer(loc.pos, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.normalBuffer);
+      gl.enableVertexAttribArray(loc.normal);
+      gl.vertexAttribPointer(loc.normal, 3, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, mesh.positions.length / 3);
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+}
+
+async function loadScenePart(spec) {
+  const mesh = await loadMesh(spec.file);
+  return transformMesh(mesh, spec);
+}
+
+function transformMesh(mesh, spec) {
+  const scale = spec.scale !== undefined ? spec.scale : 1;
+  const pos = spec.pos !== undefined ? spec.pos : [0, 0, 0];
+  const quat = spec.quat !== undefined ? spec.quat : [1, 0, 0, 0];
+  const rot = quatToMat3(quat[0], quat[1], quat[2], quat[3]);
+  const rootPos = spec.rootPos !== undefined ? spec.rootPos : [0, 0, 0];
+  const rootQuat = spec.rootQuat !== undefined ? spec.rootQuat : [1, 0, 0, 0];
+  const rootRot = quatToMat3(rootQuat[0], rootQuat[1], rootQuat[2], rootQuat[3]);
+  const positions = new Array(mesh.positions.length);
+  const normals = new Array(mesh.normals.length);
+  for (let i = 0; i < mesh.positions.length; i += 3) {
+    const x = mesh.positions[i] * scale;
+    const y = mesh.positions[i + 1] * scale;
+    const z = mesh.positions[i + 2] * scale;
+    const lx = rot[0] * x + rot[1] * y + rot[2] * z + pos[0];
+    const ly = rot[3] * x + rot[4] * y + rot[5] * z + pos[1];
+    const lz = rot[6] * x + rot[7] * y + rot[8] * z + pos[2];
+    positions[i] = rootRot[0] * lx + rootRot[1] * ly + rootRot[2] * lz + rootPos[0];
+    positions[i + 1] = rootRot[3] * lx + rootRot[4] * ly + rootRot[5] * lz + rootPos[1];
+    positions[i + 2] = rootRot[6] * lx + rootRot[7] * ly + rootRot[8] * lz + rootPos[2];
+  }
+  for (let i = 0; i < mesh.normals.length; i += 3) {
+    const x = mesh.normals[i];
+    const y = mesh.normals[i + 1];
+    const z = mesh.normals[i + 2];
+    const lx = rot[0] * x + rot[1] * y + rot[2] * z;
+    const ly = rot[3] * x + rot[4] * y + rot[5] * z;
+    const lz = rot[6] * x + rot[7] * y + rot[8] * z;
+    normals[i] = rootRot[0] * lx + rootRot[1] * ly + rootRot[2] * lz;
+    normals[i + 1] = rootRot[3] * lx + rootRot[4] * ly + rootRot[5] * lz;
+    normals[i + 2] = rootRot[6] * lx + rootRot[7] * ly + rootRot[8] * lz;
+  }
+  return { positions, normals };
+}
+
+function quatToMat3(w, x, y, z) {
+  const xx = x * x, yy = y * y, zz = z * z;
+  const xy = x * y, xz = x * z, yz = y * z;
+  const wx = w * x, wy = w * y, wz = w * z;
+  return [
+    1 - 2 * (yy + zz), 2 * (xy - wz), 2 * (xz + wy),
+    2 * (xy + wz), 1 - 2 * (xx + zz), 2 * (yz - wx),
+    2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (xx + yy)
+  ];
+}
+
+function createViewer(canvas, spec) {
+  const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
+  if (!gl) return setCanvasMessage(canvas, "WebGL 不可用");
+
+  const program = makeProgram(gl);
+  const loc = {
+    pos: gl.getAttribLocation(program, "aPosition"),
+    normal: gl.getAttribLocation(program, "aNormal"),
+    mvp: gl.getUniformLocation(program, "uMVP"),
+    model: gl.getUniformLocation(program, "uModel"),
+    color: gl.getUniformLocation(program, "uColor"),
+    light: gl.getUniformLocation(program, "uLight")
+  };
+  let mesh = null;
+  Promise.all(spec.files.map(loadMesh)).then(parts => {
+    mesh = combineMeshes(parts);
+    normalizeMesh(mesh);
+    mesh.positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.positions), gl.STATIC_DRAW);
+    mesh.normalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.normalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.normals), gl.STATIC_DRAW);
+  }).catch(err => {
+    console.warn(spec.title, err);
+    setCanvasMessage(canvas, "模型加载失败");
+  });
+
+  function draw(t) {
+    resizeCanvas(canvas);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    if (mesh) {
+      const aspect = canvas.width / canvas.height;
+      const proj = perspective(Math.PI / 4.2, aspect, 0.1, 100);
+      const view = translate(identity(), 0, 0, -3.15);
+      let model = rotateY(identity(), t * 0.00042 + (spec.title.length % 5) * .3);
+      model = rotateX(model, -0.42);
+      const mvp = multiply(proj, multiply(view, model));
+      gl.useProgram(program);
+      gl.uniformMatrix4fv(loc.mvp, false, mvp);
+      gl.uniformMatrix4fv(loc.model, false, model);
+      gl.uniform3fv(loc.color, new Float32Array(spec.color));
+      gl.uniform3fv(loc.light, new Float32Array([0.45, 0.8, 0.55]));
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.positionBuffer);
+      gl.enableVertexAttribArray(loc.pos);
+      gl.vertexAttribPointer(loc.pos, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.normalBuffer);
+      gl.enableVertexAttribArray(loc.normal);
+      gl.vertexAttribPointer(loc.normal, 3, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(gl.TRIANGLES, 0, mesh.positions.length / 3);
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+}
+
+async function loadMesh(path) {
+  const url = ROOT + encodeURI(path).replace(/#/g, "%23");
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${path} ${res.status}`);
+  const buffer = await res.arrayBuffer();
+  if (path.toLowerCase().endsWith(".obj")) {
+    return parseOBJ(new TextDecoder().decode(buffer));
+  }
+  return parseSTL(buffer);
+}
+
+function parseSTL(buffer) {
+  const dv = new DataView(buffer);
+  if (buffer.byteLength >= 84) {
+    const triCount = dv.getUint32(80, true);
+    const expected = 84 + triCount * 50;
+    if (expected === buffer.byteLength) return parseBinarySTL(dv, triCount);
+  }
+  return parseAsciiSTL(new TextDecoder().decode(buffer));
+}
+
+function parseBinarySTL(dv, triCount) {
+  const positions = [];
+  const normals = [];
+  for (let i = 0, off = 84; i < triCount; i++, off += 50) {
+    let nx = dv.getFloat32(off, true);
+    let ny = dv.getFloat32(off + 4, true);
+    let nz = dv.getFloat32(off + 8, true);
+    const nl = Math.hypot(nx, ny, nz) || 1;
+    nx /= nl; ny /= nl; nz /= nl;
+    off += 12;
+    for (let v = 0; v < 3; v++) {
+      positions.push(dv.getFloat32(off, true), dv.getFloat32(off + 4, true), dv.getFloat32(off + 8, true));
+      normals.push(nx, ny, nz);
+      off += 12;
+    }
+    off -= 48;
+  }
+  return { positions, normals };
+}
+
+function parseAsciiSTL(text) {
+  const positions = [];
+  const re = /vertex\s+([-\d.eE+]+)\s+([-\d.eE+]+)\s+([-\d.eE+]+)/g;
+  let m;
+  while ((m = re.exec(text))) positions.push(parseFloat(m[1]), parseFloat(m[2]), parseFloat(m[3]));
+  return withNormals(positions);
+}
+
+function parseOBJ(text) {
+  const verts = [];
+  const positions = [];
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line[0] === "#") continue;
+    const parts = line.split(/\s+/);
+    if (parts[0] === "v") {
+      verts.push([parseFloat(parts[1]), parseFloat(parts[2]), parseFloat(parts[3])]);
+    } else if (parts[0] === "f") {
+      const ids = parts.slice(1).map(p => parseInt(p.split("/")[0], 10)).map(i => i < 0 ? verts.length + i : i - 1);
+      for (let i = 1; i < ids.length - 1; i++) {
+        for (const id of [ids[0], ids[i], ids[i + 1]]) {
+          const v = verts[id];
+          if (v) positions.push(v[0], v[1], v[2]);
+        }
+      }
+    }
+  }
+  return withNormals(positions);
+}
+
+function withNormals(positions) {
+  const normals = new Array(positions.length).fill(0);
+  for (let i = 0; i < positions.length; i += 9) {
+    const ax = positions[i], ay = positions[i+1], az = positions[i+2];
+    const bx = positions[i+3], by = positions[i+4], bz = positions[i+5];
+    const cx = positions[i+6], cy = positions[i+7], cz = positions[i+8];
+    const ux = bx - ax, uy = by - ay, uz = bz - az;
+    const vx = cx - ax, vy = cy - ay, vz = cz - az;
+    let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    const l = Math.hypot(nx, ny, nz) || 1;
+    nx /= l; ny /= l; nz /= l;
+    for (let j = 0; j < 3; j++) {
+      normals[i + j * 3] = nx;
+      normals[i + j * 3 + 1] = ny;
+      normals[i + j * 3 + 2] = nz;
+    }
+  }
+  return { positions, normals };
+}
+
+function combineMeshes(meshes) {
+  if (meshes.length === 1) return meshes[0];
+  const positions = [];
+  const normals = [];
+  for (const mesh of meshes) {
+    positions.push(...mesh.positions);
+    normals.push(...mesh.normals);
+  }
+  return { positions, normals };
+}
+
+function normalizeMesh(mesh) {
+  const p = mesh.positions;
+  const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+  for (let i = 0; i < p.length; i += 3) {
+    for (let k = 0; k < 3; k++) {
+      min[k] = Math.min(min[k], p[i+k]);
+      max[k] = Math.max(max[k], p[i+k]);
+    }
+  }
+  const center = [(min[0]+max[0])/2, (min[1]+max[1])/2, (min[2]+max[2])/2];
+  const size = Math.max(max[0]-min[0], max[1]-min[1], max[2]-min[2]) || 1;
+  const scale = 1.8 / size;
+  for (let i = 0; i < p.length; i += 3) {
+    p[i] = (p[i] - center[0]) * scale;
+    p[i+1] = (p[i+1] - center[1]) * scale;
+    p[i+2] = (p[i+2] - center[2]) * scale;
+  }
+}
+
+function makeProgram(gl) {
+  const vs = `
+    attribute vec3 aPosition;
+    attribute vec3 aNormal;
+    uniform mat4 uMVP;
+    uniform mat4 uModel;
+    varying vec3 vNormal;
+    varying vec3 vPos;
+    void main() {
+      vNormal = mat3(uModel) * aNormal;
+      vPos = aPosition;
+      gl_Position = uMVP * vec4(aPosition, 1.0);
+    }`;
+  const fs = `
+    precision mediump float;
+    uniform vec3 uColor;
+    uniform vec3 uLight;
+    varying vec3 vNormal;
+    varying vec3 vPos;
+    void main() {
+      vec3 n = normalize(vNormal);
+      float light = max(dot(n, normalize(uLight)), 0.0);
+      float rim = pow(1.0 - max(dot(n, vec3(0.0,0.0,1.0)), 0.0), 2.0) * 0.22;
+      vec3 color = uColor * (0.35 + light * 0.75) + vec3(rim);
+      gl_FragColor = vec4(color, 1.0);
+    }`;
+  const v = compile(gl, gl.VERTEX_SHADER, vs);
+  const f = compile(gl, gl.FRAGMENT_SHADER, fs);
+  const p = gl.createProgram();
+  gl.attachShader(p, v);
+  gl.attachShader(p, f);
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  return p;
+}
+
+function compile(gl, type, src) {
+  const s = gl.createShader(type);
+  gl.shaderSource(s, src);
+  gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+function resizeCanvas(canvas) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.floor(canvas.clientWidth * dpr);
+  const h = Math.floor(canvas.clientHeight * dpr);
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+}
+
+function setCanvasMessage(canvas, msg) {
+  const ctx = canvas.getContext("2d");
+  canvas.width = canvas.clientWidth || 320;
+  canvas.height = canvas.clientHeight || 160;
+  ctx.fillStyle = "#f7f3ea";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#6c665d";
+  ctx.font = "14px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(msg, canvas.width / 2, canvas.height / 2);
+}
+
+function identity() {
+  return new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+}
+function multiply(a, b) {
+  const out = new Float32Array(16);
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+    out[c*4+r] = a[0*4+r]*b[c*4+0] + a[1*4+r]*b[c*4+1] + a[2*4+r]*b[c*4+2] + a[3*4+r]*b[c*4+3];
+  }
+  return out;
+}
+function translate(m, x, y, z) {
+  const t = identity();
+  t[12] = x; t[13] = y; t[14] = z;
+  return multiply(m, t);
+}
+function rotateX(m, a) {
+  const c = Math.cos(a), s = Math.sin(a);
+  const r = new Float32Array([1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]);
+  return multiply(m, r);
+}
+function rotateY(m, a) {
+  const c = Math.cos(a), s = Math.sin(a);
+  const r = new Float32Array([c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]);
+  return multiply(m, r);
+}
+function perspective(fovy, aspect, near, far) {
+  const f = 1 / Math.tan(fovy / 2);
+  const nf = 1 / (near - far);
+  return new Float32Array([
+    f / aspect,0,0,0,
+    0,f,0,0,
+    0,0,(far+near)*nf,-1,
+    0,0,(2*far*near)*nf,0
+  ]);
+}
+function orthographic(left, right, bottom, top, near, far) {
+  const lr = 1 / (left - right);
+  const bt = 1 / (bottom - top);
+  const nf = 1 / (near - far);
+  return new Float32Array([
+    -2 * lr,0,0,0,
+    0,-2 * bt,0,0,
+    0,0,2 * nf,0,
+    (left + right) * lr,(top + bottom) * bt,(far + near) * nf,1
+  ]);
+}
+function lookAt(eye, target, up) {
+  const z = normalize([eye[0] - target[0], eye[1] - target[1], eye[2] - target[2]]);
+  const x = normalize(cross(up, z));
+  const y = cross(z, x);
+  return new Float32Array([
+    x[0], y[0], z[0], 0,
+    x[1], y[1], z[1], 0,
+    x[2], y[2], z[2], 0,
+    -dot(x, eye), -dot(y, eye), -dot(z, eye), 1
+  ]);
+}
+function cross(a, b) {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0]
+  ];
+}
+function dot(a, b) {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+function normalize(v) {
+  const l = Math.hypot(v[0], v[1], v[2]) || 1;
+  return [v[0] / l, v[1] / l, v[2] / l];
+}
+</script>
+</body>
+</html>

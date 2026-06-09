@@ -1,0 +1,408 @@
+version: 0.1
+registry_name: MaholoBioBenchAssetRegistry
+date: 2026-06-09
+status: m0_draft
+source_repo: robosuite_maholo
+
+notes: >
+  M0 资产清单来自当前 robosuite_maholo 的 arena XML、object XML
+  和 Maholo laboratory 环境类。该文件记录“当前已经存在什么”，
+  不代表所有资产都已经具备 protocol 级评价所需的完整交互语义。
+
+arena_variants:
+  - arena_id: LaboratoryArena
+    wrapper: robosuite.models.arenas.LaboratoryArena
+    source_xml: robosuite/models/assets/arenas/laboratory_arena.xml
+    default_in:
+      - MaholoSingleLaboratory
+      - MaholoLaboratory
+    visual: true
+    collision: partial
+    articulated: false
+    role: default_interactive_scene_base
+    notes: >
+      包含房间、工作台、基座、rack、tip box 和 storage fixture。
+      可交互的大型仪器通常由环境在运行时作为 object 加载。
+
+  - arena_id: LaboratoryArenaWorld
+    wrapper: robosuite.models.arenas.LaboratoryArenaWorld
+    source_xml: robosuite/models/assets/arenas/laboratory_arena_world.xml
+    visual: true
+    collision: true
+    articulated: false
+    role: static_showcase_world
+    notes: >
+      包含更完整的静态仪器轮廓。除非明确需要对比，否则不要在同一位置
+      同时加载静态仪器和 runtime 可交互仪器，避免重复模型。
+
+arena_static_assets:
+  - asset_id: room_shell
+    category: room
+    examples:
+      - floor
+      - wall_left_visual
+      - wall_right_visual
+      - wall_rear_visual
+      - wall_front_visual
+    visual: true
+    collision: partial
+    movable: false
+    articulated: false
+
+  - asset_id: work_tables
+    category: furniture
+    examples:
+      - table_main
+      - table_side_R1_FF
+      - table_side_R2
+      - table_incubator
+    visual: true
+    collision: true
+    movable: false
+    articulated: false
+
+  - asset_id: fixed_bases
+    category: support_structure
+    examples:
+      - base_robot
+      - base_centrifuge
+      - base_deep_freezer
+    visual: true
+    collision: partial
+    movable: false
+    articulated: false
+
+  - asset_id: pipette_racks
+    category: rack
+    examples:
+      - SinglePipetteRack_4
+      - SinglePipetteRack_5
+    visual: true
+    collision: true
+    movable: false
+    articulated: false
+    semantic_state_needed:
+      - occupied_slots
+
+  - asset_id: tube_racks_and_storage
+    category: rack
+    examples:
+      - 1.5ml_tube_rack
+      - 1.5ml_tube_storage48
+      - Storage_50mlx6
+      - Storage_15ml-6
+      - Workshop_15mlx5
+      - Workshop_50mlx3
+    visual: true
+    collision: true
+    movable: false
+    articulated: false
+    semantic_state_needed:
+      - occupied_slots
+      - sample_location
+
+  - asset_id: tip_boxes
+    category: consumable_storage
+    examples:
+      - ChipBOXRack_1000ul
+      - ChipBOXRack_200ul
+      - ChipBOX_200ul
+      - ChipBOX_5ml
+    visual: true
+    collision: true
+    movable: false
+    articulated: false
+    semantic_state_needed:
+      - available_tips
+      - used_tips
+
+  - asset_id: fixed_tools
+    category: tool_fixture
+    examples:
+      - Chip_off
+      - Opener
+      - Centrifuge_tool
+      - Pipette_Push
+    visual: true
+    collision: true
+    movable: false
+    articulated: false
+
+  - asset_id: pcr_plate_cooling_racks
+    category: rack
+    examples:
+      - PCR_PlateMainRack_withCooling
+    visual: true
+    collision: true
+    movable: false
+    articulated: false
+    available_in:
+      - LaboratoryArenaWorld
+
+runtime_objects:
+  - asset_id: p1000_pipette_with_tip
+    display_name: 带 tip 的 P1000 pipette
+    category: movable_labware
+    source_class: P1000Pipette_withtipObject
+    source_xml: robosuite/models/assets/objects/P1000Pipette_withtip.xml
+    default_instances:
+      - Pipette001
+      - Pipette002
+      - Pipette003
+      - Pipette004
+    visual: true
+    collision: true
+    collision_detail: 64_decomposed_collision_meshes
+    motion_model: free_joint_added_by_python_wrapper
+    movable: true
+    articulated: false
+    current_interaction:
+      - reach
+      - grasp_alignment
+      - push_alignment
+      - transport_candidate
+    semantic_state_needed:
+      - held_by
+      - tip_attached
+      - current_volume_ul
+      - tip_sample_id
+
+  - asset_id: tube_1_5ml
+    display_name: 1.5 ml 试管
+    category: movable_container
+    source_class: tube1_5mlObject
+    source_xml: robosuite/models/assets/objects/1.5ml_tube.xml
+    default_instances:
+      - Tube001
+      - Tube002
+      - Tube003
+      - Tube004
+      - Tube005
+      - Tube006
+      - Tube007
+      - Tube008
+    visual: true
+    collision: true
+    collision_detail: 2_collision_meshes
+    motion_model: free_joint_added_by_python_wrapper
+    movable: true
+    articulated: false
+    current_interaction:
+      - reach
+      - grasp_candidate
+      - transport_candidate
+    semantic_state_needed:
+      - current_location
+      - is_open
+      - sample_id
+      - volume_ul
+      - contaminated
+
+  - asset_id: cool_incubator_4c
+    display_name: 4°C 冷藏培养箱
+    category: articulated_equipment
+    source_class: CoolIncubator4CObject
+    source_xml: robosuite/models/assets/objects/cool_incubator_4c.xml
+    default_instances:
+      - CoolIncubator4C
+    visual: true
+    collision: true
+    motion_model: fixed_body_with_hinge_door
+    movable: false
+    articulated: true
+    joints:
+      - name: hinge
+        type: hinge
+        range: [0.0, 1.57]
+    current_interaction:
+      - door_opening
+    existing_task_envs:
+      - MaholoSingleLaboratory_OpenCoolIncubator
+    semantic_state_needed:
+      - door_open_angle
+      - temperature
+      - contains
+      - occupied_slots
+
+  - asset_id: co2_incubator
+    display_name: CO2 培养箱
+    category: articulated_equipment
+    source_class: CO2IncubatorObject
+    source_xml: robosuite/models/assets/objects/co2_incubator.xml
+    default_instances:
+      - CO2Incubator
+    visual: true
+    collision: true
+    motion_model: fixed_body_with_outer_door_inner_door_and_latch
+    movable: false
+    articulated: true
+    joints:
+      - name: outer_hinge
+        type: hinge
+        range: [0.0, 1.57]
+      - name: inner_hinge
+        type: hinge
+        range: [0.0, 1.57]
+      - name: latch_joint
+        type: hinge
+        range: [-1.57, 1.57]
+    current_interaction:
+      - outer_door_opening
+      - latch_operation
+      - inner_door_opening
+    existing_task_envs:
+      - MaholoSingleLaboratory_OpenCO2Incubator
+    semantic_state_needed:
+      - outer_door_open_angle
+      - inner_door_open_angle
+      - latch_angle
+      - temperature
+      - co2_level
+      - contains
+      - occupied_slots
+
+  - asset_id: deep_freezer
+    display_name: 深低温冰箱
+    category: articulated_equipment
+    source_class: DeepFreezerObject
+    source_xml: robosuite/models/assets/objects/deep_freezer.xml
+    default_instances:
+      - DeepFreezer
+    visual: true
+    collision: true
+    motion_model: fixed_body_with_hinge_door
+    movable: false
+    articulated: true
+    joints:
+      - name: hinge
+        type: hinge
+        range: [0.0, 1.57]
+    current_interaction:
+      - door_opening
+    existing_task_envs:
+      - MaholoSingleLaboratory_OpenDeepFreezer
+    semantic_state_needed:
+      - door_open_angle
+      - temperature
+      - contains
+      - occupied_slots
+
+  - asset_id: thermal_cycler
+    display_name: PCR thermal cycler
+    category: static_equipment
+    source_class: ThermalCyclerObject
+    source_xml: robosuite/models/assets/objects/thermal_cycler.xml
+    default_instances:
+      - ThermalCycler
+    visual: true
+    collision: true
+    motion_model: fixed_body
+    movable: false
+    articulated: false
+    current_interaction:
+      - static_obstacle
+    semantic_state_needed:
+      - lid_open
+      - program_state
+      - running
+      - occupied_slots
+
+  - asset_id: mx307
+    display_name: MX-307
+    category: static_equipment
+    source_class: MX307Object
+    source_xml: robosuite/models/assets/objects/mx307.xml
+    default_instances:
+      - MX307
+    visual: true
+    collision: true
+    motion_model: fixed_body
+    movable: false
+    articulated: false
+    current_interaction:
+      - static_obstacle
+    semantic_state_needed:
+      - running
+      - mode
+
+  - asset_id: microtube_mixer
+    display_name: Microtube mixer
+    category: static_equipment
+    source_class: MicrotubeMixerObject
+    source_xml: robosuite/models/assets/objects/microtube_mixer.xml
+    default_instances:
+      - MicrotubeMixer
+    visual: true
+    collision: true
+    motion_model: fixed_body
+    movable: false
+    articulated: false
+    current_interaction:
+      - static_obstacle
+    semantic_state_needed:
+      - running
+      - mix_duration_s
+
+  - asset_id: vortex_mixer
+    display_name: Vortex mixer
+    category: static_equipment
+    source_class: VortexMixerObject
+    source_xml: robosuite/models/assets/objects/vortex_mixer.xml
+    default_instances:
+      - VortexMixer
+    visual: true
+    collision: true
+    motion_model: fixed_body
+    movable: false
+    articulated: false
+    current_interaction:
+      - static_obstacle
+    semantic_state_needed:
+      - running
+      - pressed
+      - mix_duration_s
+
+  - asset_id: block_thermostatic_bath
+    display_name: Block thermostatic bath
+    category: static_equipment
+    source_class: BlockThermostaticBathObject
+    source_xml: robosuite/models/assets/objects/block_thermostatic_bath.xml
+    default_instances:
+      - BlockThermostaticBath
+    visual: true
+    collision: true
+    motion_model: fixed_body
+    movable: false
+    articulated: false
+    current_interaction:
+      - static_obstacle
+    semantic_state_needed:
+      - temperature
+      - occupied_slots
+
+  - asset_id: cool_block_bath
+    display_name: Cool block bath
+    category: static_equipment
+    source_class: CoolBlockBathObject
+    source_xml: robosuite/models/assets/objects/cool_block_bath.xml
+    default_instances:
+      - CoolBlockBath
+    visual: true
+    collision: true
+    motion_model: fixed_body
+    movable: false
+    articulated: false
+    current_interaction:
+      - static_obstacle
+    semantic_state_needed:
+      - temperature
+      - occupied_slots
+
+known_gaps:
+  - duplicated_static_and_runtime_instrument_representations
+  - missing_liquid_volume_dynamics
+  - missing_tip_pickup_and_eject_state
+  - missing_tube_cap_open_close_state
+  - missing_sample_identity_and_contamination_state_in_runtime
+  - missing_operation_states_for_static_instruments
+  - contact_geometry_needs_runtime_validation_for_task_critical_assets
