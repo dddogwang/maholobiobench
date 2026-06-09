@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="academic-paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MaholoBioBench: A Protocol-Aware Benchmark for Bio-Laboratory Robot Manipulation</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<style>
+  .slide { letter-spacing: 0; }
+  .kicker { color: var(--muted); font-size: 21px; text-transform: uppercase; letter-spacing: .06em; }
+  .title { font-size: 76px; line-height: 1.06; margin: 18px 0; }
+  .h2 { font-size: 52px; line-height: 1.12; margin: 10px 0 20px; }
+  .lead { font-size: 29px; line-height: 1.48; color: var(--muted); max-width: none; width: 100%; }
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
+  .tag { border: 1px solid var(--border); border-radius: 999px; padding: 10px 16px; background: var(--surface); font-size: 19px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; margin-top: 34px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; margin-top: 34px; }
+  .cardx { border: 0; border-top: 2px solid var(--border); border-radius: 0; background: transparent; padding: 20px 0 0; min-height: 140px; }
+  .cardx h3 { margin: 0 0 12px; font-size: 28px; line-height: 1.18; }
+  .cardx p, .cardx li { font-size: 22px; line-height: 1.48; color: var(--muted); }
+  .cardx ul { margin: 14px 0 0; padding-left: 22px; }
+  .cardx li { margin-bottom: 14px; }
+  .cardx li:last-child { margin-bottom: 0; }
+  .table { display: grid; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 24px; }
+  .table.c3 { grid-template-columns: 1fr 1.25fr 1.35fr; }
+  .table.c4 { grid-template-columns: .9fr 1.25fr 1.25fr 1.3fr; }
+  .table div { padding: 15px 16px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); font-size: 20px; line-height: 1.38; }
+  .table.c3 div:nth-child(3n), .table.c4 div:nth-child(4n) { border-right: 0; }
+  .table .head { font-weight: 800; background: var(--surface-2); color: var(--text); }
+  .table .key { font-weight: 800; color: var(--text); }
+  .table .em { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 30px; align-items: start; margin-top: 26px; }
+  .hero img { width: 100%; max-height: 520px; object-fit: cover; border: 1px solid var(--border); border-radius: 8px; }
+  .statement { border: 0; border-radius: 0; background: transparent; padding: 0; font-size: 28px; line-height: 1.46; margin-top: 28px; max-width: none; width: 100%; }
+  .numbered-list { counter-reset: item; display: grid; gap: 36px; margin-top: 38px; max-width: none; width: 100%; }
+  .numbered-item { counter-increment: item; display: grid; grid-template-columns: 62px 1fr; column-gap: 18px; align-items: start; }
+  .numbered-item::before { content: counter(item, decimal-leading-zero); font-size: 34px; line-height: 1.05; font-weight: 800; color: var(--accent); }
+  .numbered-item h3 { font-size: 30px; line-height: 1.16; margin: 0 0 7px; }
+  .numbered-item p { font-size: 23px; line-height: 1.5; color: var(--muted); margin: 0; }
+  .footnote { margin-top: 28px; font-size: 17px; line-height: 1.45; color: var(--muted); max-width: none; width: 100%; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 30px; }
+  .flow .node { border: 0; border-top: 2px solid var(--border); border-radius: 0; background: transparent; padding: 18px 0 0; min-height: 112px; font-size: 19px; line-height: 1.42; }
+  .flow .node strong { display: block; font-size: 22px; color: var(--text); margin-bottom: 8px; }
+  .big { font-size: 98px; line-height: 1; font-weight: 900; }
+  .center { display: grid; place-items: center; text-align: center; }
+  .muted { color: var(--muted); }
+  .lang-switch { position: fixed; top: 22px; right: 28px; z-index: 1000; display: inline-flex; gap: 6px; padding: 6px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); box-shadow: 0 8px 24px color-mix(in srgb, var(--text) 12%, transparent); }
+  .lang-switch button { border: 0; border-radius: 999px; background: transparent; color: var(--muted); font: inherit; font-size: 14px; line-height: 1; padding: 8px 11px; cursor: pointer; }
+  .lang-switch button.is-active { background: #111; color: #fff; box-shadow: inset 0 0 0 1px #111; }
+  code { font-size: .92em; }
+</style>
+</head>
+<body
+  data-themes="academic-paper,minimal-white,corporate-clean,swiss-grid,engineering-whiteprint,blueprint,tokyo-night"
+  data-theme-base="assets/themes/">
+<div class="lang-switch" aria-label="Language switch">
+  <button type="button" data-lang="zh" class="is-active">中文</button>
+  <button type="button" data-lang="ja">日本語</button>
+  <button type="button" data-lang="en">English</button>
+</div>
+<div class="deck">
+
+  <section class="slide" data-title="Cover">
+    <p class="kicker">Paper Title</p>
+    <h1 class="title anim-fade-up" data-anim="fade-up">MaholoBioBench:<br>A Protocol-Aware Benchmark for Bio-Laboratory Robot Manipulation</h1>
+    <p class="lead">把 Maholo 数字孪生从“仿真演示环境”推进为可定义任务、可记录协议状态、可复现评分的 benchmark。</p>
+    <div class="tag-row">
+      <span class="tag">Maholo Digital Twin</span>
+      <span class="tag">Task Taxonomy</span>
+      <span class="tag">Protocol-Aware Metrics</span>
+      <span class="tag">Baselines</span>
+    </div>
+    <div class="deck-footer"><span class="muted">按 ← → 翻页 · T 切换主题 · O 概览</span><span class="slide-number" data-current="1" data-total="10"></span></div>
+    <div class="notes">开场只讲一句：这项研究的主线已经收敛为 benchmark paper，而不是新算法 paper。</div>
+  </section>
+
+  <section class="slide" data-title="Main Claim">
+    <p class="kicker">Core Position</p>
+    <h2 class="h2">MaholoBioBench 不是某个策略，而是一套“考试系统”</h2>
+    <div class="statement">
+      MaholoBioBench 定义生物实验室机器人在 Maholo 数字孪生中的任务层级、协议状态、评价指标和可复现实验流程，用来区分 <strong>geometric success</strong> 与 <strong>experimental protocol success</strong>。
+    </div>
+    <div class="numbered-list">
+      <div class="numbered-item">
+        <div>
+          <h3>研究对象</h3>
+          <p>面向 Maholo 数字孪生中的生物实验室机器人操作，定义可复现、可比较的任务和评价流程。</p>
+        </div>
+      </div>
+      <div class="numbered-item">
+        <div>
+          <h3>核心贡献</h3>
+          <p>构建仿真环境、任务层级、协议状态、评价指标和 episode 输出格式，让实验操作可以被系统化评分。</p>
+        </div>
+      </div>
+      <div class="numbered-item">
+        <div>
+          <h3>Baseline 作用</h3>
+          <p>用现有策略在冻结任务上建立参考结果，验证任务可执行性、难度梯度和 protocol-aware metrics 的区分能力。</p>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">注：这里的“协议”指实验流程中的语义状态，例如步骤进度、样品身份、液体体积、tip 状态、污染约束和设备状态。</p>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="2" data-total="10"></span></div>
+    <div class="notes">这里需要避免讲成“我要提出一个新控制算法”。真正可防御的贡献是 benchmark contract 和 protocol-aware evaluation。</div>
+  </section>
+
+  <section class="slide" data-title="Contribution 1">
+    <p class="kicker">Contribution 1</p>
+    <h2 class="h2">Maholo 生物实验室数字孪生环境</h2>
+    <div class="hero">
+      <img src="maholo_all_equipment_frontview.png" alt="Maholo laboratory digital twin">
+      <div class="cardx">
+        <h3>固定但高度结构化的实验室空间</h3>
+        <ul>
+          <li>围绕 Maholo 机器人量身设计的 lab room</li>
+          <li>机器人周围布置工作台、培养箱、冰箱、rack、pipette、tube、tip box 等</li>
+          <li>价值不是随机生成场景，而是提供贴近实验室自动化工作站的 high-fidelity digital twin</li>
+        </ul>
+      </div>
+    </div>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="3" data-total="10"></span></div>
+    <div class="notes">这一页强调和普通桌面 manipulation benchmark 的差异：你的环境是固定小屋子，但固定不等于弱，价值在结构化、实验室设备密度和 Maholo 专用设计。</div>
+  </section>
+
+  <section class="slide" data-title="Contribution 2">
+    <p class="kicker">Contribution 2</p>
+    <h2 class="h2">三层次任务体系</h2>
+    <div class="table c4">
+      <div class="head">层级</div><div class="head">定义</div><div class="head">Task Families</div><div class="head">评价重点</div>
+      <div class="key">Level 1<br>General Primitives</div><div>不绑定具体实验协议的基础动作能力</div><div><code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>TransportHeldObject</code><br><code>OpenArticulatedEquipment</code></div><div>pose error、grasp stability、collision、door angle</div>
+      <div class="key">Level 2<br>Bio-Lab Skills</div><div>带实验室物体和操作语义的技能</div><div><code>RetrieveContainer</code><br><code>TransferLiquid</code></div><div>sample identity、volume、tip state、equipment state</div>
+      <div class="key">Level 3<br>Protocol Tasks</div><div>由多个技能组成的长时序实验协议</div><div><code>RetrieveAndTransferSample</code><br><code>PrepareDilutionSeries</code></div><div>protocol completion、step order、progress、violations</div>
+    </div>
+    <p class="lead" style="margin-top:24px">三个层级都采用统一结构：每个 <strong>Task Family</strong> 下包含具体 <strong>instances</strong>，并通过 <strong>variations</strong> 构造泛化测试。</p>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="4" data-total="10"></span></div>
+    <div class="notes">这一页回应刚才确认的关键点：普遍机器人 benchmark 更常用 family 级别，而不是把单一对象任务当顶层任务。</div>
+  </section>
+
+  <section class="slide" data-title="Task Example">
+    <p class="kicker">Design Pattern</p>
+    <h2 class="h2">每个 Task Family 如何展开</h2>
+    <div class="table c3">
+      <div class="head">Task Family</div><div class="head">Instances</div><div class="head">Variations</div>
+      <div class="key">ReachTargetPose</div><div>ReachPipetteGraspPose<br>ReachTubePose<br>ReachEquipmentHandle</div><div>target pose、target affordance、arm、camera、layout、clutter</div>
+      <div class="key">GraspLabObject</div><div>GraspPipette<br>GraspTube<br>GraspPlate<br>GraspLidOrCap</div><div>object type、object pose、rack slot、grasp affordance、mass、friction</div>
+      <div class="key">OpenArticulatedEquipment</div><div>OpenCoolIncubator<br>OpenDeepFreezer<br>OpenCO2Incubator</div><div>equipment type、initial angle、target angle、handle pose、latch state</div>
+      <div class="key">TransferLiquid</div><div>TubeToTubeTransfer<br>TubeToPlateTransfer<br>MultiChannelPlateTransfer</div><div>volume、sample id、tip state、source / target container、distance</div>
+    </div>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="5" data-total="10"></span></div>
+    <div class="notes">这页可以直接用来和导师讨论任务命名。Task Family 用抽象能力命名，instance 用具体对象和实验场景命名，variation 用来构造泛化测试。</div>
+  </section>
+
+  <section class="slide" data-title="Contribution 3">
+    <p class="kicker">Contribution 3</p>
+    <h2 class="h2">每个任务都制定实验操作评价方法</h2>
+    <div class="table c4">
+      <div class="head">评分层级</div><div class="head">判断问题</div><div class="head">典型指标</div><div class="head">实验意义</div>
+      <div class="key">Robot / Geometry</div><div>动作有没有完成？</div><div>task success、pose error、collision、trajectory smoothness</div><div>保证基础机器人动作可控</div>
+      <div class="key">Protocol Progress</div><div>步骤有没有按协议推进？</div><div>completion rate、progress score、step order accuracy</div><div>长时序实验不能只看最终位置</div>
+      <div class="key">Sample Correctness</div><div>是否操作正确样品？</div><div>sample identity accuracy、wrong sample count</div><div>拿错样品在几何上可能成功，但实验失败</div>
+      <div class="key">Liquid Semantics</div><div>液体状态是否正确？</div><div>volume error、relative volume error、concentration correctness</div><div>体积和浓度决定实验结果</div>
+      <div class="key">Bio-Lab Violations</div><div>是否违反实验约束？</div><div>contamination、tip reuse、temperature zone、equipment state</div><div>污染和温区错误应直接扣分</div>
+    </div>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="6" data-total="10"></span></div>
+    <div class="notes">这里是最核心的研究新意。普通 benchmark 多看几何动作，MaholoBioBench 还要看协议、样品、液体、污染和设备状态。</div>
+  </section>
+
+  <section class="slide" data-title="Contribution 4">
+    <p class="kicker">Contribution 4</p>
+    <h2 class="h2">Baseline 范围：覆盖冻结任务，而不是所有未来任务</h2>
+    <div class="statement">
+      推荐策略：<strong>v0 覆盖所有冻结的 8 个 task families</strong>，每个 family 先选择 1-2 个代表性 instance 运行 baseline。
+    </div>
+    <div class="table c3">
+      <div class="head">Agent Type</div><div class="head">作用</div><div class="head">论文中证明什么</div>
+      <div class="key">Scripted Expert</div><div>生成可行示范和任务上限</div><div>任务不是不可解，episode 格式可复现</div>
+      <div class="key">Imitation / BC</div><div>从 expert trajectories 学习</div><div>Level 1 到 Level 3 的误差累积</div>
+      <div class="key">State-Based RL</div><div>用奖励学习连续控制</div><div>稀疏奖励和 protocol metrics 下的能力边界</div>
+      <div class="key">Sequence / Planner</div><div>组合多个 primitive 执行协议</div><div>长时序、步骤顺序和状态追踪难点</div>
+      <div class="key">Optional VLA</div><div>作为外部现有模型测试</div><div>可作为扩展实验，不定义核心贡献</div>
+    </div>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="7" data-total="10"></span></div>
+    <div class="notes">这里回答“所有还是大部分”的问题：论文第一版不要承诺所有 future tasks。冻结的 v0 family 要尽量全覆盖，但每个 family 可以先选代表实例。</div>
+  </section>
+
+  <section class="slide" data-title="Result Tables">
+    <p class="kicker">Expected Evidence</p>
+    <h2 class="h2">最后需要形成的结果表</h2>
+    <div class="table c4">
+      <div class="head">结果表</div><div class="head">Rows</div><div class="head">Columns / Evidence</div><div class="head">证明目的</div>
+      <div class="key">Task Suite Summary</div><div>8 task families + representative instances</div><div>level、objects、variations、metrics</div><div>任务定义完整，不是 demo collection</div>
+      <div class="key">Expert Feasibility</div><div>8 task families</div><div>expert SR、steps、collision、progress</div><div>证明任务可执行</div>
+      <div class="key">Baseline Comparison</div><div>scripted / imitation / RL / sequence</div><div>Level 1/2/3 SR、volume error、violations</div><div>证明 benchmark 有区分度</div>
+      <div class="key">Metric Gap</div><div>agents / tasks</div><div>geometric success vs protocol success</div><div>证明普通成功率不够</div>
+      <div class="key">Generalization</div><div>seen vs unseen</div><div>layout、sample id、rack slot、equipment state</div><div>证明 variation 设计有价值</div>
+    </div>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="8" data-total="10"></span></div>
+    <div class="notes">这页可以作为接下来工作的验收标准。真正的 benchmark paper 最终要有这些表，而不只是环境截图。</div>
+  </section>
+
+  <section class="slide" data-title="Milestones">
+    <p class="kicker">Milestone · 2026.07-2027.03</p>
+    <h2 class="h2">2027 年 3 月前完成 MaholoBioBench v0 闭环</h2>
+    <div class="table c4">
+      <div class="head">阶段</div><div class="head">时间</div><div class="head">目标</div><div class="head">交付物</div>
+      <div class="key">M1<br>Environment Readiness</div><div>2026.7-2026.8</div><div>完善 Maholo robosuite 中所有模型的 collision model，并把关键仪器做成可交互 object</div><div>稳定碰撞几何；可打开的门/盖；可运行或可切换状态的仪器</div>
+      <div class="key">M2<br>Task Definition</div><div>2026.8-2026.9</div><div>定义所有 v0 动作任务的 Task Families、Instances 和 Variations</div><div>冻结 task registry；确定 seen / unseen variations；完成任务文档</div>
+      <div class="key">M3<br>Protocol Evaluation</div><div>2026.9-2026.10</div><div>定义基于实验流程语义的状态、规则和评价方法</div><div>protocol state schema；metrics；violations；episode summary 输出</div>
+      <div class="key">M4<br>Baseline Results</div><div>2026.10-2027.03</div><div>用现有方法完成 baseline，并形成论文结果表</div><div>BC、SAC、PPO 等结果；expert feasibility；metric gap；generalization 表</div>
+    </div>
+    <p class="footnote">注：M1 中的 collision model 建议表述为“完善碰撞模型 / convex decomposition / 多碰撞子部件拆分”，核心目标是让仪器和 labware 能稳定交互，而不是把“非凸化”本身作为贡献。</p>
+    <div class="deck-footer"><span></span><span class="slide-number" data-current="9" data-total="10"></span></div>
+    <div class="notes">这页给出从 7 月到年底的执行路线。重点是先让环境和任务定义稳定，再进入协议评价和 baseline 实验。</div>
+  </section>
+
+  <section class="slide center" data-title="Closing">
+    <div>
+      <p class="kicker">Final Formulation</p>
+      <div class="big">MaholoBioBench</div>
+      <p class="lead" style="margin:22px auto 0">
+        一个基于 Maholo 生物实验室数字孪生的协议感知机器人操作 benchmark：<br>贡献固定但高保真的实验室环境、三层次任务体系、实验协议评价标准，并用 baselines 验证任务可执行性和指标区分度。
+      </p>
+      <div class="flow">
+        <div class="node"><strong>Environment</strong>Maholo 专用实验室小屋</div>
+        <div class="node"><strong>Tasks</strong>Task Family / Instance / Variation</div>
+        <div class="node"><strong>Protocol</strong>sample、volume、tip、equipment</div>
+        <div class="node"><strong>Metrics</strong>geometry + experiment success</div>
+        <div class="node"><strong>Baselines</strong>覆盖 v0 冻结任务</div>
+      </div>
+    </div>
+    <div class="deck-footer"><span class="muted">MaholoBioBench · Research Direction Summary</span><span class="slide-number" data-current="10" data-total="10"></span></div>
+    <div class="notes">最后收束：这就是接下来论文的主线表达。不要把算法放在中心，算法只是考生。</div>
+  </section>
+
+</div>
+<script src="assets/runtime.js"></script>
+<script>
+const TRANSLATIONS = {
+  ja: {
+    "Paper Title": "Paper Title",
+    "MaholoBioBench:<br>A Protocol-Aware Benchmark for Bio-Laboratory Robot Manipulation": "MaholoBioBench:<br>A Protocol-Aware Benchmark for Bio-Laboratory Robot Manipulation",
+    "把 Maholo 数字孪生从“仿真演示环境”推进为可定义任务、可记录协议状态、可复现评分的 benchmark。": "Maholo デジタルツインを、単なるシミュレーションデモ環境から、タスク定義・プロトコル状態記録・再現可能な採点ができる benchmark へ発展させる。",
+    "Maholo Digital Twin": "Maholo Digital Twin",
+    "Task Taxonomy": "Task Taxonomy",
+    "Protocol-Aware Metrics": "Protocol-Aware Metrics",
+    "Baselines": "Baselines",
+    "按 ← → 翻页 · T 切换主题 · O 概览": "← → で移動 · T でテーマ切替 · O で一覧",
+    "Core Position": "Core Position",
+    "MaholoBioBench 不是某个策略，而是一套“考试系统”": "MaholoBioBench は特定の方策ではなく、「評価システム」である",
+    "MaholoBioBench 定义生物实验室机器人在 Maholo 数字孪生中的任务层级、协议状态、评价指标和可复现实验流程，用来区分 <strong>geometric success</strong> 与 <strong>experimental protocol success</strong>。": "MaholoBioBench は、Maholo デジタルツイン内のバイオ実験室ロボットに対して、タスク階層、プロトコル状態、評価指標、再現可能な実験手順を定義し、<strong>geometric success</strong> と <strong>experimental protocol success</strong> を区別する。",
+    "研究对象": "研究対象",
+    "面向 Maholo 数字孪生中的生物实验室机器人操作，定义可复现、可比较的任务和评价流程。": "Maholo デジタルツイン内のバイオ実験室ロボット操作を対象に、再現可能で比較可能なタスクと評価手順を定義する。",
+    "核心贡献": "中核的貢献",
+    "构建仿真环境、任务层级、协议状态、评价指标和 episode 输出格式，让实验操作可以被系统化评分。": "シミュレーション環境、タスク階層、プロトコル状態、評価指標、episode 出力形式を構築し、実験操作を体系的に採点できるようにする。",
+    "Baseline 作用": "Baseline の役割",
+    "用现有策略在冻结任务上建立参考结果，验证任务可执行性、难度梯度和 protocol-aware metrics 的区分能力。": "既存手法を凍結タスク上で評価し、タスクの実行可能性、難度の段階性、protocol-aware metrics の識別能力を検証する。",
+    "注：这里的“协议”指实验流程中的语义状态，例如步骤进度、样品身份、液体体积、tip 状态、污染约束和设备状态。": "注：「プロトコル」とは、実験手順における意味状態を指す。例：ステップ進捗、サンプル ID、液体量、tip 状態、汚染制約、装置状態。",
+    "Contribution 1": "Contribution 1",
+    "Maholo 生物实验室数字孪生环境": "Maholo バイオ実験室デジタルツイン環境",
+    "固定但高度结构化的实验室空间": "固定だが高度に構造化された実験室空間",
+    "围绕 Maholo 机器人量身设计的 lab room": "Maholo ロボットに合わせて設計された lab room",
+    "机器人周围布置工作台、培养箱、冰箱、rack、pipette、tube、tip box 等": "ロボット周辺に作業台、インキュベータ、冷凍庫、rack、pipette、tube、tip box などを配置",
+    "价值不是随机生成场景，而是提供贴近实验室自动化工作站的 high-fidelity digital twin": "価値はランダムな場面生成ではなく、実験室自動化ワークステーションに近い high-fidelity digital twin を提供すること",
+    "Contribution 2": "Contribution 2",
+    "三层次任务体系": "三層のタスク体系",
+    "层级": "階層",
+    "定义": "定義",
+    "Task Families": "Task Families",
+    "评价重点": "評価の焦点",
+    "Level 1<br>General Primitives": "Level 1<br>General Primitives",
+    "不绑定具体实验协议的基础动作能力": "特定の実験プロトコルに依存しない基本操作能力",
+    "<code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>TransportHeldObject</code><br><code>OpenArticulatedEquipment</code>": "<code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>TransportHeldObject</code><br><code>OpenArticulatedEquipment</code>",
+    "pose error、grasp stability、collision、door angle": "pose error、grasp stability、collision、door angle",
+    "Level 2<br>Bio-Lab Skills": "Level 2<br>Bio-Lab Skills",
+    "带实验室物体和操作语义的技能": "実験室物体と操作意味を含むスキル",
+    "<code>RetrieveContainer</code><br><code>TransferLiquid</code>": "<code>RetrieveContainer</code><br><code>TransferLiquid</code>",
+    "sample identity、volume、tip state、equipment state": "sample identity、volume、tip state、equipment state",
+    "Level 3<br>Protocol Tasks": "Level 3<br>Protocol Tasks",
+    "由多个技能组成的长时序实验协议": "複数スキルから構成される長期系列の実験プロトコル",
+    "<code>RetrieveAndTransferSample</code><br><code>PrepareDilutionSeries</code>": "<code>RetrieveAndTransferSample</code><br><code>PrepareDilutionSeries</code>",
+    "protocol completion、step order、progress、violations": "protocol completion、step order、progress、violations",
+    "三个层级都采用统一结构：每个 <strong>Task Family</strong> 下包含具体 <strong>instances</strong>，并通过 <strong>variations</strong> 构造泛化测试。": "三つの階層はいずれも共通構造を採用する：各 <strong>Task Family</strong> は具体的な <strong>instances</strong> を持ち、<strong>variations</strong> によって汎化テストを構成する。",
+    "Design Pattern": "Design Pattern",
+    "每个 Task Family 如何展开": "各 Task Family の展開方法",
+    "Task Family": "Task Family",
+    "Instances": "Instances",
+    "Variations": "Variations",
+    "ReachTargetPose": "ReachTargetPose",
+    "ReachPipetteGraspPose<br>ReachTubePose<br>ReachEquipmentHandle": "ReachPipetteGraspPose<br>ReachTubePose<br>ReachEquipmentHandle",
+    "target pose、target affordance、arm、camera、layout、clutter": "target pose、target affordance、arm、camera、layout、clutter",
+    "GraspLabObject": "GraspLabObject",
+    "GraspPipette<br>GraspTube<br>GraspPlate<br>GraspLidOrCap": "GraspPipette<br>GraspTube<br>GraspPlate<br>GraspLidOrCap",
+    "object type、object pose、rack slot、grasp affordance、mass、friction": "object type、object pose、rack slot、grasp affordance、mass、friction",
+    "OpenArticulatedEquipment": "OpenArticulatedEquipment",
+    "OpenCoolIncubator<br>OpenDeepFreezer<br>OpenCO2Incubator": "OpenCoolIncubator<br>OpenDeepFreezer<br>OpenCO2Incubator",
+    "equipment type、initial angle、target angle、handle pose、latch state": "equipment type、initial angle、target angle、handle pose、latch state",
+    "TransferLiquid": "TransferLiquid",
+    "TubeToTubeTransfer<br>TubeToPlateTransfer<br>MultiChannelPlateTransfer": "TubeToTubeTransfer<br>TubeToPlateTransfer<br>MultiChannelPlateTransfer",
+    "volume、sample id、tip state、source / target container、distance": "volume、sample id、tip state、source / target container、distance",
+    "Contribution 3": "Contribution 3",
+    "每个任务都制定实验操作评价方法": "各タスクに実験操作の評価方法を定義",
+    "评分层级": "評価レイヤ",
+    "判断问题": "判定する問い",
+    "典型指标": "代表的指標",
+    "实验意义": "実験上の意味",
+    "Robot / Geometry": "Robot / Geometry",
+    "动作有没有完成？": "操作は完了したか？",
+    "task success、pose error、collision、trajectory smoothness": "task success、pose error、collision、trajectory smoothness",
+    "保证基础机器人动作可控": "基本的なロボット動作の実行可能性を保証",
+    "Protocol Progress": "Protocol Progress",
+    "步骤有没有按协议推进？": "手順はプロトコル通りに進んだか？",
+    "completion rate、progress score、step order accuracy": "completion rate、progress score、step order accuracy",
+    "长时序实验不能只看最终位置": "長期系列の実験は最終位置だけでは評価できない",
+    "Sample Correctness": "Sample Correctness",
+    "是否操作正确样品？": "正しいサンプルを操作したか？",
+    "sample identity accuracy、wrong sample count": "sample identity accuracy、wrong sample count",
+    "拿错样品在几何上可能成功，但实验失败": "サンプルを取り違えても幾何的には成功し得るが、実験としては失敗",
+    "Liquid Semantics": "Liquid Semantics",
+    "液体状态是否正确？": "液体状態は正しいか？",
+    "volume error、relative volume error、concentration correctness": "volume error、relative volume error、concentration correctness",
+    "体积和浓度决定实验结果": "体積と濃度は実験結果を左右する",
+    "Bio-Lab Violations": "Bio-Lab Violations",
+    "是否违反实验约束？": "実験制約に違反していないか？",
+    "contamination、tip reuse、temperature zone、equipment state": "contamination、tip reuse、temperature zone、equipment state",
+    "污染和温区错误应直接扣分": "汚染や温度ゾーンの誤りは直接減点対象",
+    "Contribution 4": "Contribution 4",
+    "Baseline 范围：覆盖冻结任务，而不是所有未来任务": "Baseline 範囲：凍結タスクを対象とし、将来タスクすべてではない",
+    "推荐策略：<strong>v0 覆盖所有冻结的 8 个 task families</strong>，每个 family 先选择 1-2 个代表性 instance 运行 baseline。": "推奨方針：<strong>v0 では凍結済みの 8 task families をすべて対象</strong>とし、各 family からまず 1-2 個の代表的 instance を選んで baseline を実行する。",
+    "Agent Type": "Agent Type",
+    "作用": "役割",
+    "论文中证明什么": "論文で示すこと",
+    "Scripted Expert": "Scripted Expert",
+    "生成可行示范和任务上限": "実行可能なデモとタスク上限を生成",
+    "任务不是不可解，episode 格式可复现": "タスクが解けない問題ではなく、episode 形式が再現可能であること",
+    "Imitation / BC": "Imitation / BC",
+    "从 expert trajectories 学习": "expert trajectories から学習",
+    "Level 1 到 Level 3 的误差累积": "Level 1 から Level 3 への誤差蓄積",
+    "State-Based RL": "State-Based RL",
+    "用奖励学习连续控制": "報酬に基づき連続制御を学習",
+    "稀疏奖励和 protocol metrics 下的能力边界": "疎な報酬と protocol metrics における能力境界",
+    "Sequence / Planner": "Sequence / Planner",
+    "组合多个 primitive 执行协议": "複数 primitive を組み合わせてプロトコルを実行",
+    "长时序、步骤顺序和状态追踪难点": "長期系列、手順順序、状態追跡の難しさ",
+    "Optional VLA": "Optional VLA",
+    "作为外部现有模型测试": "既存の外部モデルとして評価",
+    "可作为扩展实验，不定义核心贡献": "拡張実験として扱い、中核貢献とはしない",
+    "Expected Evidence": "Expected Evidence",
+    "最后需要形成的结果表": "最終的に必要な結果表",
+    "结果表": "結果表",
+    "Rows": "Rows",
+    "Columns / Evidence": "Columns / Evidence",
+    "证明目的": "目的",
+    "Task Suite Summary": "Task Suite Summary",
+    "8 task families + representative instances": "8 task families + representative instances",
+    "level、objects、variations、metrics": "level、objects、variations、metrics",
+    "任务定义完整，不是 demo collection": "タスク定義が完全であり、demo collection ではないこと",
+    "Expert Feasibility": "Expert Feasibility",
+    "8 task families": "8 task families",
+    "expert SR、steps、collision、progress": "expert SR、steps、collision、progress",
+    "证明任务可执行": "タスク実行可能性を示す",
+    "Baseline Comparison": "Baseline Comparison",
+    "scripted / imitation / RL / sequence": "scripted / imitation / RL / sequence",
+    "Level 1/2/3 SR、volume error、violations": "Level 1/2/3 SR、volume error、violations",
+    "证明 benchmark 有区分度": "benchmark の識別能力を示す",
+    "Metric Gap": "Metric Gap",
+    "agents / tasks": "agents / tasks",
+    "geometric success vs protocol success": "geometric success vs protocol success",
+    "证明普通成功率不够": "通常の成功率だけでは不十分であることを示す",
+    "Generalization": "Generalization",
+    "seen vs unseen": "seen vs unseen",
+    "layout、sample id、rack slot、equipment state": "layout、sample id、rack slot、equipment state",
+    "证明 variation 设计有价值": "variation 設計の価値を示す",
+    "Milestone · 2026.07-2027.03": "Milestone · 2026.07-2027.03",
+    "2027 年 3 月前完成 MaholoBioBench v0 闭环": "2027 年 3 月までに MaholoBioBench v0 の閉ループを完成",
+    "阶段": "フェーズ",
+    "时间": "期間",
+    "目标": "目標",
+    "交付物": "成果物",
+    "M1<br>Environment Readiness": "M1<br>Environment Readiness",
+    "2026.7-2026.8": "2026.7-2026.8",
+    "完善 Maholo robosuite 中所有模型的 collision model，并把关键仪器做成可交互 object": "Maholo robosuite 内の全モデルの collision model を整備し、主要機器をインタラクティブ object として扱えるようにする",
+    "稳定碰撞几何；可打开的门/盖；可运行或可切换状态的仪器": "安定した衝突幾何；開閉可能な扉/蓋；運転または状態切替可能な機器",
+    "M2<br>Task Definition": "M2<br>Task Definition",
+    "2026.8-2026.9": "2026.8-2026.9",
+    "定义所有 v0 动作任务的 Task Families、Instances 和 Variations": "すべての v0 操作タスクの Task Families、Instances、Variations を定義",
+    "冻结 task registry；确定 seen / unseen variations；完成任务文档": "task registry を凍結；seen / unseen variations を確定；タスク文書を完成",
+    "M3<br>Protocol Evaluation": "M3<br>Protocol Evaluation",
+    "2026.9-2026.10": "2026.9-2026.10",
+    "定义基于实验流程语义的状态、规则和评价方法": "実験手順の意味に基づく状態、ルール、評価方法を定義",
+    "protocol state schema；metrics；violations；episode summary 输出": "protocol state schema；metrics；violations；episode summary 出力",
+    "M4<br>Baseline Results": "M4<br>Baseline Results",
+    "2026.10-2027.03": "2026.10-2027.03",
+    "用现有方法完成 baseline，并形成论文结果表": "既存手法で baseline を実行し、論文用の結果表を作成",
+    "BC、SAC、PPO 等结果；expert feasibility；metric gap；generalization 表": "BC、SAC、PPO などの結果；expert feasibility；metric gap；generalization 表",
+    "注：M1 中的 collision model 建议表述为“完善碰撞模型 / convex decomposition / 多碰撞子部件拆分”，核心目标是让仪器和 labware 能稳定交互，而不是把“非凸化”本身作为贡献。": "注：M1 の collision model は「衝突モデルの整備 / convex decomposition / 複数衝突部品への分割」と表現するのが望ましい。中核目標は、機器と labware を安定して相互作用可能にすることであり、「非凸化」自体を貢献にすることではない。",
+    "Final Formulation": "Final Formulation",
+    "MaholoBioBench": "MaholoBioBench",
+    "一个基于 Maholo 生物实验室数字孪生的协议感知机器人操作 benchmark：<br>贡献固定但高保真的实验室环境、三层次任务体系、实验协议评价标准，并用 baselines 验证任务可执行性和指标区分度。": "Maholo バイオ実験室デジタルツインに基づく protocol-aware robot manipulation benchmark：<br>固定だが高忠実度の実験室環境、三層タスク体系、実験プロトコル評価基準を提供し、baselines によってタスク実行可能性と指標の識別能力を検証する。",
+    "<strong>Environment</strong>Maholo 专用实验室小屋": "<strong>Environment</strong>Maholo 専用の実験室空間",
+    "<strong>Tasks</strong>Task Family / Instance / Variation": "<strong>Tasks</strong>Task Family / Instance / Variation",
+    "<strong>Protocol</strong>sample、volume、tip、equipment": "<strong>Protocol</strong>sample、volume、tip、equipment",
+    "<strong>Metrics</strong>geometry + experiment success": "<strong>Metrics</strong>geometry + experiment success",
+    "<strong>Baselines</strong>覆盖 v0 冻结任务": "<strong>Baselines</strong>v0 凍結タスクを対象"
+  },
+  en: {
+    "Paper Title": "Paper Title",
+    "MaholoBioBench:<br>A Protocol-Aware Benchmark for Bio-Laboratory Robot Manipulation": "MaholoBioBench:<br>A Protocol-Aware Benchmark for Bio-Laboratory Robot Manipulation",
+    "把 Maholo 数字孪生从“仿真演示环境”推进为可定义任务、可记录协议状态、可复现评分的 benchmark。": "Turning the Maholo digital twin from a simulation demo environment into a benchmark with defined tasks, protocol-state logging, and reproducible scoring.",
+    "Maholo Digital Twin": "Maholo Digital Twin",
+    "Task Taxonomy": "Task Taxonomy",
+    "Protocol-Aware Metrics": "Protocol-Aware Metrics",
+    "Baselines": "Baselines",
+    "按 ← → 翻页 · T 切换主题 · O 概览": "← → navigate · T change theme · O overview",
+    "Core Position": "Core Position",
+    "MaholoBioBench 不是某个策略，而是一套“考试系统”": "MaholoBioBench is not a policy; it is an evaluation system",
+    "MaholoBioBench 定义生物实验室机器人在 Maholo 数字孪生中的任务层级、协议状态、评价指标和可复现实验流程，用来区分 <strong>geometric success</strong> 与 <strong>experimental protocol success</strong>。": "MaholoBioBench defines task hierarchy, protocol state, evaluation metrics, and reproducible evaluation procedures for bio-laboratory robots in the Maholo digital twin, distinguishing <strong>geometric success</strong> from <strong>experimental protocol success</strong>.",
+    "研究对象": "Research Scope",
+    "面向 Maholo 数字孪生中的生物实验室机器人操作，定义可复现、可比较的任务和评价流程。": "Define reproducible and comparable tasks and evaluation procedures for bio-laboratory robot manipulation in the Maholo digital twin.",
+    "核心贡献": "Core Contribution",
+    "构建仿真环境、任务层级、协议状态、评价指标和 episode 输出格式，让实验操作可以被系统化评分。": "Build the simulation environment, task hierarchy, protocol state, metrics, and episode output format so experimental operations can be systematically scored.",
+    "Baseline 作用": "Role of Baselines",
+    "用现有策略在冻结任务上建立参考结果，验证任务可执行性、难度梯度和 protocol-aware metrics 的区分能力。": "Run existing policies on frozen tasks to establish reference results and validate feasibility, difficulty gradients, and the discriminative power of protocol-aware metrics.",
+    "注：这里的“协议”指实验流程中的语义状态，例如步骤进度、样品身份、液体体积、tip 状态、污染约束和设备状态。": "Note: “protocol” here refers to semantic states in an experimental procedure, such as step progress, sample identity, liquid volume, tip state, contamination constraints, and equipment state.",
+    "Contribution 1": "Contribution 1",
+    "Maholo 生物实验室数字孪生环境": "Maholo Bio-Laboratory Digital Twin Environment",
+    "固定但高度结构化的实验室空间": "A fixed but highly structured laboratory space",
+    "围绕 Maholo 机器人量身设计的 lab room": "A lab room tailored around the Maholo robot",
+    "机器人周围布置工作台、培养箱、冰箱、rack、pipette、tube、tip box 等": "Workbenches, incubators, freezers, racks, pipettes, tubes, tip boxes, and other assets arranged around the robot",
+    "价值不是随机生成场景，而是提供贴近实验室自动化工作站的 high-fidelity digital twin": "The value is not random scene generation, but a high-fidelity digital twin close to a laboratory automation workstation",
+    "Contribution 2": "Contribution 2",
+    "三层次任务体系": "Three-Level Task Taxonomy",
+    "层级": "Level",
+    "定义": "Definition",
+    "Task Families": "Task Families",
+    "评价重点": "Evaluation Focus",
+    "Level 1<br>General Primitives": "Level 1<br>General Primitives",
+    "不绑定具体实验协议的基础动作能力": "Basic manipulation capabilities independent of a specific experimental protocol",
+    "<code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>TransportHeldObject</code><br><code>OpenArticulatedEquipment</code>": "<code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>TransportHeldObject</code><br><code>OpenArticulatedEquipment</code>",
+    "pose error、grasp stability、collision、door angle": "pose error, grasp stability, collision, door angle",
+    "Level 2<br>Bio-Lab Skills": "Level 2<br>Bio-Lab Skills",
+    "带实验室物体和操作语义的技能": "Skills with lab objects and experimental semantics",
+    "<code>RetrieveContainer</code><br><code>TransferLiquid</code>": "<code>RetrieveContainer</code><br><code>TransferLiquid</code>",
+    "sample identity、volume、tip state、equipment state": "sample identity, volume, tip state, equipment state",
+    "Level 3<br>Protocol Tasks": "Level 3<br>Protocol Tasks",
+    "由多个技能组成的长时序实验协议": "Long-horizon experimental protocols composed of multiple skills",
+    "<code>RetrieveAndTransferSample</code><br><code>PrepareDilutionSeries</code>": "<code>RetrieveAndTransferSample</code><br><code>PrepareDilutionSeries</code>",
+    "protocol completion、step order、progress、violations": "protocol completion, step order, progress, violations",
+    "三个层级都采用统一结构：每个 <strong>Task Family</strong> 下包含具体 <strong>instances</strong>，并通过 <strong>variations</strong> 构造泛化测试。": "All three levels use the same structure: each <strong>Task Family</strong> contains concrete <strong>instances</strong>, and <strong>variations</strong> are used to construct generalization tests.",
+    "Design Pattern": "Design Pattern",
+    "每个 Task Family 如何展开": "How Each Task Family Expands",
+    "Task Family": "Task Family",
+    "Instances": "Instances",
+    "Variations": "Variations",
+    "ReachTargetPose": "ReachTargetPose",
+    "ReachPipetteGraspPose<br>ReachTubePose<br>ReachEquipmentHandle": "ReachPipetteGraspPose<br>ReachTubePose<br>ReachEquipmentHandle",
+    "target pose、target affordance、arm、camera、layout、clutter": "target pose, target affordance, arm, camera, layout, clutter",
+    "GraspLabObject": "GraspLabObject",
+    "GraspPipette<br>GraspTube<br>GraspPlate<br>GraspLidOrCap": "GraspPipette<br>GraspTube<br>GraspPlate<br>GraspLidOrCap",
+    "object type、object pose、rack slot、grasp affordance、mass、friction": "object type, object pose, rack slot, grasp affordance, mass, friction",
+    "OpenArticulatedEquipment": "OpenArticulatedEquipment",
+    "OpenCoolIncubator<br>OpenDeepFreezer<br>OpenCO2Incubator": "OpenCoolIncubator<br>OpenDeepFreezer<br>OpenCO2Incubator",
+    "equipment type、initial angle、target angle、handle pose、latch state": "equipment type, initial angle, target angle, handle pose, latch state",
+    "TransferLiquid": "TransferLiquid",
+    "TubeToTubeTransfer<br>TubeToPlateTransfer<br>MultiChannelPlateTransfer": "TubeToTubeTransfer<br>TubeToPlateTransfer<br>MultiChannelPlateTransfer",
+    "volume、sample id、tip state、source / target container、distance": "volume, sample id, tip state, source / target container, distance",
+    "Contribution 3": "Contribution 3",
+    "每个任务都制定实验操作评价方法": "Evaluation Criteria for Each Experimental Task",
+    "评分层级": "Metric Layer",
+    "判断问题": "Question",
+    "典型指标": "Representative Metrics",
+    "实验意义": "Experimental Meaning",
+    "Robot / Geometry": "Robot / Geometry",
+    "动作有没有完成？": "Was the motion completed?",
+    "task success、pose error、collision、trajectory smoothness": "task success, pose error, collision, trajectory smoothness",
+    "保证基础机器人动作可控": "Ensures basic robot controllability",
+    "Protocol Progress": "Protocol Progress",
+    "步骤有没有按协议推进？": "Did the steps progress according to the protocol?",
+    "completion rate、progress score、step order accuracy": "completion rate, progress score, step order accuracy",
+    "长时序实验不能只看最终位置": "Long-horizon experiments cannot be judged only by final pose",
+    "Sample Correctness": "Sample Correctness",
+    "是否操作正确样品？": "Was the correct sample manipulated?",
+    "sample identity accuracy、wrong sample count": "sample identity accuracy, wrong sample count",
+    "拿错样品在几何上可能成功，但实验失败": "Using the wrong sample can be geometrically successful but experimentally wrong",
+    "Liquid Semantics": "Liquid Semantics",
+    "液体状态是否正确？": "Is the liquid state correct?",
+    "volume error、relative volume error、concentration correctness": "volume error, relative volume error, concentration correctness",
+    "体积和浓度决定实验结果": "Volume and concentration determine experimental outcomes",
+    "Bio-Lab Violations": "Bio-Lab Violations",
+    "是否违反实验约束？": "Were experimental constraints violated?",
+    "contamination、tip reuse、temperature zone、equipment state": "contamination, tip reuse, temperature zone, equipment state",
+    "污染和温区错误应直接扣分": "Contamination and temperature-zone errors should be directly penalized",
+    "Contribution 4": "Contribution 4",
+    "Baseline 范围：覆盖冻结任务，而不是所有未来任务": "Baseline Scope: Frozen Tasks, Not All Future Tasks",
+    "推荐策略：<strong>v0 覆盖所有冻结的 8 个 task families</strong>，每个 family 先选择 1-2 个代表性 instance 运行 baseline。": "Recommended strategy: <strong>v0 covers all 8 frozen task families</strong>; for each family, first select 1-2 representative instances for baseline runs.",
+    "Agent Type": "Agent Type",
+    "作用": "Role",
+    "论文中证明什么": "What It Shows in the Paper",
+    "Scripted Expert": "Scripted Expert",
+    "生成可行示范和任务上限": "Generates feasible demonstrations and an upper bound",
+    "任务不是不可解，episode 格式可复现": "Shows tasks are solvable and the episode format is reproducible",
+    "Imitation / BC": "Imitation / BC",
+    "从 expert trajectories 学习": "Learns from expert trajectories",
+    "Level 1 到 Level 3 的误差累积": "Error accumulation from Level 1 to Level 3",
+    "State-Based RL": "State-Based RL",
+    "用奖励学习连续控制": "Learns continuous control from rewards",
+    "稀疏奖励和 protocol metrics 下的能力边界": "Capability limits under sparse rewards and protocol metrics",
+    "Sequence / Planner": "Sequence / Planner",
+    "组合多个 primitive 执行协议": "Composes multiple primitives to execute a protocol",
+    "长时序、步骤顺序和状态追踪难点": "Challenges in long horizons, step order, and state tracking",
+    "Optional VLA": "Optional VLA",
+    "作为外部现有模型测试": "Evaluated as an external existing model",
+    "可作为扩展实验，不定义核心贡献": "Can be an extended experiment, not a core contribution",
+    "Expected Evidence": "Expected Evidence",
+    "最后需要形成的结果表": "Expected Result Tables",
+    "结果表": "Result Table",
+    "Rows": "Rows",
+    "Columns / Evidence": "Columns / Evidence",
+    "证明目的": "Purpose",
+    "Task Suite Summary": "Task Suite Summary",
+    "8 task families + representative instances": "8 task families + representative instances",
+    "level、objects、variations、metrics": "level, objects, variations, metrics",
+    "任务定义完整，不是 demo collection": "Shows task definitions are complete, not a demo collection",
+    "Expert Feasibility": "Expert Feasibility",
+    "8 task families": "8 task families",
+    "expert SR、steps、collision、progress": "expert SR, steps, collision, progress",
+    "证明任务可执行": "Shows task feasibility",
+    "Baseline Comparison": "Baseline Comparison",
+    "scripted / imitation / RL / sequence": "scripted / imitation / RL / sequence",
+    "Level 1/2/3 SR、volume error、violations": "Level 1/2/3 SR, volume error, violations",
+    "证明 benchmark 有区分度": "Shows discriminative power",
+    "Metric Gap": "Metric Gap",
+    "agents / tasks": "agents / tasks",
+    "geometric success vs protocol success": "geometric success vs protocol success",
+    "证明普通成功率不够": "Shows ordinary success rate is insufficient",
+    "Generalization": "Generalization",
+    "seen vs unseen": "seen vs unseen",
+    "layout、sample id、rack slot、equipment state": "layout, sample id, rack slot, equipment state",
+    "证明 variation 设计有价值": "Shows the value of variation design",
+    "Milestone · 2026.07-2027.03": "Milestone · 2026.07-2027.03",
+    "2027 年 3 月前完成 MaholoBioBench v0 闭环": "Complete the MaholoBioBench v0 loop by March 2027",
+    "阶段": "Phase",
+    "时间": "Time",
+    "目标": "Goal",
+    "交付物": "Deliverables",
+    "M1<br>Environment Readiness": "M1<br>Environment Readiness",
+    "2026.7-2026.8": "2026.7-2026.8",
+    "完善 Maholo robosuite 中所有模型的 collision model，并把关键仪器做成可交互 object": "Improve collision models for all Maholo robosuite assets and make key instruments interactive objects",
+    "稳定碰撞几何；可打开的门/盖；可运行或可切换状态的仪器": "Stable collision geometry; openable doors/lids; instruments with runnable or switchable states",
+    "M2<br>Task Definition": "M2<br>Task Definition",
+    "2026.8-2026.9": "2026.8-2026.9",
+    "定义所有 v0 动作任务的 Task Families、Instances 和 Variations": "Define Task Families, Instances, and Variations for all v0 manipulation tasks",
+    "冻结 task registry；确定 seen / unseen variations；完成任务文档": "Freeze the task registry; define seen/unseen variations; complete task documentation",
+    "M3<br>Protocol Evaluation": "M3<br>Protocol Evaluation",
+    "2026.9-2026.10": "2026.9-2026.10",
+    "定义基于实验流程语义的状态、规则和评价方法": "Define states, rules, and evaluation methods based on experimental-procedure semantics",
+    "protocol state schema；metrics；violations；episode summary 输出": "protocol state schema; metrics; violations; episode summary output",
+    "M4<br>Baseline Results": "M4<br>Baseline Results",
+    "2026.10-2027.03": "2026.10-2027.03",
+    "用现有方法完成 baseline，并形成论文结果表": "Run baselines with existing methods and produce paper result tables",
+    "BC、SAC、PPO 等结果；expert feasibility；metric gap；generalization 表": "BC, SAC, PPO results; expert feasibility; metric gap; generalization tables",
+    "注：M1 中的 collision model 建议表述为“完善碰撞模型 / convex decomposition / 多碰撞子部件拆分”，核心目标是让仪器和 labware 能稳定交互，而不是把“非凸化”本身作为贡献。": "Note: for M1, describe the collision-model work as “collision model improvement / convex decomposition / decomposition into multiple collision parts.” The core goal is stable interaction with instruments and labware, not “non-convexification” itself.",
+    "Final Formulation": "Final Formulation",
+    "MaholoBioBench": "MaholoBioBench",
+    "一个基于 Maholo 生物实验室数字孪生的协议感知机器人操作 benchmark：<br>贡献固定但高保真的实验室环境、三层次任务体系、实验协议评价标准，并用 baselines 验证任务可执行性和指标区分度。": "A protocol-aware robot manipulation benchmark based on the Maholo bio-laboratory digital twin:<br>it contributes a fixed but high-fidelity lab environment, a three-level task taxonomy, experimental-protocol evaluation criteria, and baselines to validate task feasibility and metric discriminability.",
+    "<strong>Environment</strong>Maholo 专用实验室小屋": "<strong>Environment</strong>Maholo-specific lab room",
+    "<strong>Tasks</strong>Task Family / Instance / Variation": "<strong>Tasks</strong>Task Family / Instance / Variation",
+    "<strong>Protocol</strong>sample、volume、tip、equipment": "<strong>Protocol</strong>sample, volume, tip, equipment",
+    "<strong>Metrics</strong>geometry + experiment success": "<strong>Metrics</strong>geometry + experiment success",
+    "<strong>Baselines</strong>覆盖 v0 冻结任务": "<strong>Baselines</strong>cover frozen v0 tasks"
+  }
+};
+
+const translatableSelector = [
+  ".slide .kicker",
+  ".slide h1",
+  ".slide h2",
+  ".slide h3",
+  ".slide .lead",
+  ".slide .tag",
+  ".slide .statement",
+  ".slide .numbered-item p",
+  ".slide .footnote",
+  ".slide li",
+  ".slide .table div",
+  ".slide .flow .node",
+  ".deck-footer span:first-child"
+].join(",");
+
+const translatableElements = Array.from(document.querySelectorAll(translatableSelector));
+translatableElements.forEach((el) => {
+  el.dataset.zh = el.innerHTML.trim();
+});
+
+function setLanguage(lang) {
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  document.querySelectorAll(".lang-switch button").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.lang === lang);
+  });
+  translatableElements.forEach((el) => {
+    const source = el.dataset.zh;
+    el.innerHTML = lang === "zh" ? source : (TRANSLATIONS[lang] && TRANSLATIONS[lang][source]) || source;
+  });
+  localStorage.setItem("maholobiobench-lang", lang);
+}
+
+document.querySelectorAll(".lang-switch button").forEach((button) => {
+  button.addEventListener("click", () => setLanguage(button.dataset.lang));
+});
+
+setLanguage(localStorage.getItem("maholobiobench-lang") || "zh");
+</script>
+</body>
+</html>
