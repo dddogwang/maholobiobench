@@ -9,6 +9,7 @@
 <link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
 <link rel="stylesheet" href="assets/animations/animations.css">
 <link rel="stylesheet" href="assets/page_rail.css">
+<link rel="stylesheet" href="assets/site_header.css">
 <style>
   .slide { letter-spacing: 0; }
   .h1 { font-size: 66px; line-height: 1.08; }
@@ -72,12 +73,19 @@
 <body
   data-themes="academic-paper,minimal-white,corporate-clean,swiss-grid,engineering-whiteprint,blueprint,tokyo-night"
   data-theme-base="assets/themes/">
-<nav class="page-rail" aria-label="页面导航">
-  <a href="index.html">总览</a>
-  <a href="tasks.html">任务汇报</a>
-  <a href="env_assets.html">资产页</a>
-  <a href="research_introduction_legacy.html" class="is-active">旧版页</a>
-</nav>
+<div class="site-header">
+  <nav class="page-rail" aria-label="页面导航">
+    <a href="index.html" data-i18n="nav.overview">总览</a>
+    <a href="tasks.html" data-i18n="nav.tasks">任务汇报</a>
+    <a href="env_assets.html" data-i18n="nav.assets">资产页</a>
+    <a href="research_introduction_legacy.html" class="is-active" data-i18n="nav.legacy">旧版页</a>
+  </nav>
+  <div class="lang-switch" aria-label="Language switch">
+    <button type="button" data-lang="zh" class="is-active">中文</button>
+    <button type="button" data-lang="ja">日本語</button>
+    <button type="button" data-lang="en">English</button>
+  </div>
+</div>
 <div class="deck">
 
   <section class="slide" data-title="Cover">
@@ -393,5 +401,54 @@
 
 </div>
 <script src="assets/runtime.js"></script>
+<script src="assets/site_i18n.js"></script>
+<script src="assets/research_direction_translations.js"></script>
+<script>
+const translatableSelector = [
+  ".slide .kicker",
+  ".slide h1",
+  ".slide h2",
+  ".slide h3",
+  ".slide .lede",
+  ".slide .subtitle",
+  ".slide .tag",
+  ".slide .compact-card h3",
+  ".slide .compact-card h4",
+  ".slide .compact-card p",
+  ".slide .metric",
+  ".slide .metric small",
+  ".slide .flow .node",
+  ".slide .tree h3",
+  ".slide .tree li",
+  ".slide .table-like div",
+  ".slide .big-table div",
+  ".slide .definition",
+  ".slide .mini-table div",
+  ".slide .plain-text",
+  ".slide .family-item strong",
+  ".slide .family-item span",
+  ".deck-footer span:first-child"
+].join(",");
+
+const translatableElements = Array.from(document.querySelectorAll(translatableSelector));
+translatableElements.forEach((el) => {
+  el.dataset.zh = el.innerHTML.trim();
+});
+
+function setLanguage(lang) {
+  document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
+  translatableElements.forEach((el) => {
+    const source = el.dataset.zh;
+    el.innerHTML = lang === "zh" ? source : (TRANSLATIONS[lang] && TRANSLATIONS[lang][source]) || source;
+  });
+  localStorage.setItem("maholobiobench-lang", lang);
+}
+
+window.addEventListener("maholobiobench:langchange", (event) => {
+  setLanguage(event.detail.lang);
+});
+
+setLanguage((window.MaholoSiteI18n && window.MaholoSiteI18n.getLang()) || localStorage.getItem("maholobiobench-lang") || "zh");
+</script>
 </body>
 </html>

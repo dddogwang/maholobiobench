@@ -9,6 +9,7 @@
 <link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
 <link rel="stylesheet" href="assets/animations/animations.css">
 <link rel="stylesheet" href="assets/page_rail.css">
+<link rel="stylesheet" href="assets/site_header.css">
 <style>
   :root {
     --ink: var(--text-1);
@@ -478,18 +479,25 @@
 </style>
 </head>
 <body class="asset-page">
-<nav class="page-rail" aria-label="页面导航">
-  <a href="index.html">总览</a>
-  <a href="tasks.html">任务汇报</a>
-  <a href="env_assets.html" class="is-active">资产页</a>
-  <a href="research_introduction_legacy.html">旧版页</a>
-</nav>
+<div class="site-header">
+  <nav class="page-rail" aria-label="页面导航">
+    <a href="index.html" data-i18n="nav.overview">总览</a>
+    <a href="tasks.html" data-i18n="nav.tasks">任务汇报</a>
+    <a href="env_assets.html" class="is-active" data-i18n="nav.assets">资产页</a>
+    <a href="research_introduction_legacy.html" data-i18n="nav.legacy">旧版页</a>
+  </nav>
+  <div class="lang-switch" aria-label="Language switch">
+    <button type="button" data-lang="zh" class="is-active">中文</button>
+    <button type="button" data-lang="ja">日本語</button>
+    <button type="button" data-lang="en">English</button>
+  </div>
+</div>
 <div class="deck">
 <section class="slide is-active" id="environment" data-title="Environment">
   <header>
     <div>
-      <p class="kicker">MaholoBioBench · M0 Asset Inventory</p>
-      <h1>Maholo Laboratory 环境视角</h1>
+      <p class="kicker" data-i18n="assets.env_kicker">MaholoBioBench · M0 Asset Inventory</p>
+      <h1 data-i18n="assets.env_title">Maholo Laboratory 环境视角</h1>
     </div>
   </header>
 
@@ -505,8 +513,8 @@
 <section class="slide" id="assets">
   <header>
     <div>
-      <p class="kicker">MaholoBioBench · M0 Asset Inventory</p>
-      <h1>Maholo 资产清单</h1>
+      <p class="kicker" data-i18n="assets.assets_kicker">MaholoBioBench · M0 Asset Inventory</p>
+      <h1 data-i18n="assets.assets_title">Maholo 资产清单</h1>
     </div>
   </header>
 
@@ -514,10 +522,10 @@
     <section class="viewer-area">
       <div class="legend">
         <div class="asset-tabs" aria-label="资产类别筛选">
-          <button class="asset-tab is-active" type="button" data-filter="all">全部<span class="tab-count">19</span></button>
-          <button class="asset-tab" type="button" data-filter="fixed">固定场景<span class="tab-count">9</span></button>
-          <button class="asset-tab" type="button" data-filter="movable">可移动物品<span class="tab-count">2</span></button>
-          <button class="asset-tab" type="button" data-filter="instrument">实验仪器<span class="tab-count">8</span></button>
+          <button class="asset-tab is-active" type="button" data-filter="all"><span data-i18n="assets.filter_all">全部</span><span class="tab-count">19</span></button>
+          <button class="asset-tab" type="button" data-filter="fixed"><span data-i18n="assets.filter_fixed">固定场景</span><span class="tab-count">9</span></button>
+          <button class="asset-tab" type="button" data-filter="movable"><span data-i18n="assets.filter_movable">可移动物品</span><span class="tab-count">2</span></button>
+          <button class="asset-tab" type="button" data-filter="instrument"><span data-i18n="assets.filter_instrument">实验仪器</span><span class="tab-count">8</span></button>
         </div>
       </div>
       <div class="model-grid" id="modelGrid"></div>
@@ -525,13 +533,14 @@
   </section>
 
   <footer>
-    <span>DONE / PARTIAL / NOT DONE</span>
-    <span>robosuite_maholo assets</span>
+    <span data-i18n="assets.footer_status">DONE / PARTIAL / NOT DONE</span>
+    <span data-i18n="assets.footer_source">robosuite_maholo assets</span>
   </footer>
 </section>
 
 </div>
 <script src="assets/runtime.js"></script>
+<script src="assets/site_i18n.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".deck > .slide").forEach((slide) => {

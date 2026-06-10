@@ -14,6 +14,7 @@
         cover_kicker: "MaholoBioBench · Task Overview",
         cover_title: "当前已经定义了哪些任务",
         cover_lead: "覆盖三层级任务定义，以及对应的协议状态、评价指标和统一输出格式。",
+        cover_tags: "Level 1 / Level 2 / Level 3 / Task / Status / State / Metrics / Output",
         level1_kicker: "Level 1",
         level1_title: "基础操控任务",
         level2_kicker: "Level 2",
@@ -152,6 +153,7 @@
     });
     translate(document, next);
     localStorage.setItem(STORAGE_KEY, next);
+    window.dispatchEvent(new CustomEvent("maholobiobench:langchange", { detail: { lang: next } }));
   }
 
   document.addEventListener("DOMContentLoaded", () => {
