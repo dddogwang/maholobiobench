@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="academic-paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MaholoBioBench · 任务汇报</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<link rel="stylesheet" href="assets/page_rail.css">
+<style>
+  .slide { letter-spacing: 0; }
+  .title { font-size: 76px; line-height: 1.06; margin: 18px 0; }
+  .h2 { font-size: 52px; line-height: 1.12; margin: 10px 0 20px; }
+  .lead { font-size: 29px; line-height: 1.48; color: var(--muted); max-width: none; width: 100%; }
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+  .tag { border: 1px solid var(--border); border-radius: 999px; padding: 10px 16px; background: var(--surface); font-size: 19px; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 18px; }
+  .mini-table th, .mini-table td { padding: 13px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .mini-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); font-weight: 800; }
+  .mini-table tr:hover td { background: var(--surface-2); }
+  .mini-table td.nowrap { white-space: nowrap; }
+  .section-note { margin-top: 18px; font-size: 18px; line-height: 1.5; color: var(--muted); }
+  .output-box { margin-top: 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 18px 20px; }
+  .output-box h4 { margin: 0 0 12px; font-size: 22px; }
+  .output-tree { margin: 0; padding: 0; list-style: none; font-family: var(--mono, monospace); font-size: 18px; line-height: 1.55; color: var(--text); }
+  .output-tree li { white-space: pre-wrap; }
+  .output-tree .dir { color: var(--text-3); }
+  .status { font-weight: 800; }
+  .status.done { color: var(--good); }
+  .status.partial { color: var(--warn); }
+  .status.todo { color: var(--bad); }
+  code { font-size: .92em; }
+  @media (max-width: 900px) {
+    .title { font-size: 56px; }
+    .h2 { font-size: 38px; }
+    .lead { font-size: 22px; }
+    .mini-table { font-size: 15px; }
+  }
+</style>
+</head>
+<body data-themes="academic-paper,minimal-white,corporate-clean,swiss-grid,engineering-whiteprint,blueprint,tokyo-night" data-theme-base="assets/themes/">
+<nav class="page-rail" aria-label="页面导航">
+  <a href="index.html">总览</a>
+  <a href="tasks.html" class="is-active">任务汇报</a>
+  <a href="env_assets.html">资产页</a>
+  <a href="research_introduction_legacy.html">旧版页</a>
+</nav>
+<div class="deck">
+
+  <section class="slide" data-title="Cover">
+    <p class="kicker">MaholoBioBench · Task Overview</p>
+    <h1 class="title anim-fade-up" data-anim="fade-up">当前已经定义了哪些任务</h1>
+    <p class="lead">覆盖三层级任务定义，以及对应的协议状态、评价指标和统一输出格式。</p>
+    <div class="tag-row">
+      <span class="tag">Level 1</span>
+      <span class="tag">Level 2</span>
+      <span class="tag">Level 3</span>
+      <span class="tag">Task / Status / State / Metrics / Output</span>
+    </div>
+    <div class="deck-footer"><span class="dim2">overview</span><span class="slide-number" data-current="1" data-total="4"></span></div>
+    <div class="notes">封面只保留标题和一句话，不展开细节。</div>
+  </section>
+
+  <section class="slide" data-title="Level 1">
+    <p class="kicker">Level 1</p>
+    <h2 class="h2">基础操控任务</h2>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th>任务</th>
+          <th>状态</th>
+          <th>协议状态</th>
+          <th>评价指标</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>ReachTargetPose</code></td>
+          <td class="status done">已实现</td>
+          <td class="nowrap">几何状态；无样本/液体语义</td>
+          <td>success, position error, orientation error, collision, steps</td>
+        </tr>
+        <tr>
+          <td><code>GraspLabObject</code></td>
+          <td class="status done">已实现</td>
+          <td class="nowrap">grasp / object pose</td>
+          <td>grasp success, object displacement, collision, steps</td>
+        </tr>
+        <tr>
+          <td><code>TransportHeldObject</code></td>
+          <td class="status done">已实现</td>
+          <td class="nowrap">held object pose / trajectory</td>
+          <td>success, target pose error, orientation error, smoothness, collision</td>
+        </tr>
+        <tr>
+          <td><code>OpenArticulatedEquipment</code></td>
+          <td class="status done">已实现</td>
+          <td class="nowrap"><code>equipment_state</code>: door angle, open/close, temperature, contains</td>
+          <td>success, door angle, handle distance, collision, steps</td>
+        </tr>
+        <tr>
+          <td><code>PressOrToggleInstrumentControl</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>equipment_state</code> / <code>control_state</code></td>
+          <td>success, control state error, contact force proxy, collision</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="deck-footer"><span class="dim2">level 1</span><span class="slide-number" data-current="2" data-total="4"></span></div>
+    <div class="notes">这一页只讲基础动作任务，不展开多余背景。</div>
+  </section>
+
+  <section class="slide" data-title="Level 2">
+    <p class="kicker">Level 2</p>
+    <h2 class="h2">实验室技能任务</h2>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th>任务</th>
+          <th>状态</th>
+          <th>协议状态</th>
+          <th>评价指标</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>RetrieveContainer</code></td>
+          <td class="status partial">部分实现</td>
+          <td class="nowrap"><code>container_state</code> + <code>sample_state</code> + <code>equipment_state</code></td>
+          <td>success, sample identity, container pose error, wrong sample count, protocol completion, collision</td>
+        </tr>
+        <tr>
+          <td><code>TransferLiquid</code></td>
+          <td class="status partial">部分实现</td>
+          <td class="nowrap"><code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
+          <td>success, volume error, relative volume error, sample identity, contamination, tip reuse</td>
+        </tr>
+        <tr>
+          <td><code>MountDisposableTip</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>pipette_state</code> + contamination</td>
+          <td>success, tip attachment, tip reuse violation, contamination</td>
+        </tr>
+        <tr>
+          <td><code>EjectDisposableTip</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>pipette_state</code> + contamination</td>
+          <td>success, tip ejection, contamination</td>
+        </tr>
+        <tr>
+          <td><code>PlaceContainerInStorage</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>container_state</code> + <code>sample_state</code> + <code>equipment_state</code></td>
+          <td>success, container pose error, temperature zone violation, collision</td>
+        </tr>
+        <tr>
+          <td><code>MixSample</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>sample_state</code> + <code>container_state</code> + <code>equipment_state</code></td>
+          <td>success, mix completion, contamination, volume error</td>
+        </tr>
+        <tr>
+          <td><code>CapOrSealContainer</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>container_state</code> + contamination</td>
+          <td>success, cap state success, displacement, contamination</td>
+        </tr>
+        <tr>
+          <td><code>ScanOrInspectSample</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap"><code>sample_state</code> + <code>equipment_state</code></td>
+          <td>success, inspection pose error, observation quality proxy</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="deck-footer"><span class="dim2">level 2</span><span class="slide-number" data-current="3" data-total="4"></span></div>
+    <div class="notes">这一页只保留已实现和未实现，不再解释背景。</div>
+  </section>
+
+  <section class="slide" data-title="Level 3">
+    <p class="kicker">Level 3</p>
+    <h2 class="h2">长流程协议任务</h2>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th>任务</th>
+          <th>状态</th>
+          <th>协议状态</th>
+          <th>评价指标</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>RetrieveAndTransferSample</code></td>
+          <td class="status partial">部分实现</td>
+          <td class="nowrap">sequence protocol + <code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
+          <td>protocol completion, progress score, volume error, wrong sample, contamination, episode steps</td>
+        </tr>
+        <tr>
+          <td><code>PrepareDilutionSeries</code></td>
+          <td class="status partial">部分实现</td>
+          <td class="nowrap">multi-step protocol + <code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
+          <td>protocol completion, progress score, cumulative volume error, sample identity, contamination</td>
+        </tr>
+        <tr>
+          <td><code>PipettingWorkflowWithTipChange</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap">multi-sample protocol + tip-change rules</td>
+          <td>protocol completion, tip reuse violation, contamination, volume error</td>
+        </tr>
+        <tr>
+          <td><code>SampleStorageProtocol</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap">storage sequence + temperature constraints</td>
+          <td>protocol completion, sample identity, temperature zone violation, exposure time</td>
+        </tr>
+        <tr>
+          <td><code>MediaChangeSimplified</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap">media-change protocol + liquid semantics</td>
+          <td>protocol completion, media volume error, contamination, incubator state success</td>
+        </tr>
+        <tr>
+          <td><code>PCRPlatePreparation</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap">plate assignment protocol + tip policy</td>
+          <td>protocol completion, well assignment accuracy, volume error, contamination</td>
+        </tr>
+        <tr>
+          <td><code>DeviceIncubationWorkflow</code></td>
+          <td class="status todo">未实现</td>
+          <td class="nowrap">device state + timing/temperature protocol</td>
+          <td>protocol completion, equipment state error, timing violation, temperature zone violation</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="deck-footer"><span class="dim2">level 3</span><span class="slide-number" data-current="4" data-total="4"></span></div>
+    <div class="notes">这一页只保留长流程任务和它们的状态、指标、输出格式。</div>
+  </section>
+
+  <section class="slide" data-title="Output Format">
+    <p class="kicker">Output format</p>
+    <h2 class="h2">统一输出格式</h2>
+    <div class="output-box">
+      <h4>episode_xxxxxx/</h4>
+      <ul class="output-tree">
+        <li>├── task_config.yaml</li>
+        <li>├── observations.npz</li>
+        <li>├── actions.csv</li>
+        <li>├── joint.csv</li>
+        <li>├── protocol_state.jsonl</li>
+        <li>├── metrics.csv</li>
+        <li>└── summary.json</li>
+      </ul>
+    </div>
+    <div class="deck-footer"><span class="dim2">output</span><span class="slide-number" data-current="5" data-total="5"></span></div>
+    <div class="notes">这一页单独放 episode 输出格式，不再和任务层级混在一起。</div>
+  </section>
+
+</div>
+<script src="assets/runtime.js"></script>
+</body>
+</html>
