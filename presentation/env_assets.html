@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Maholo 环境资产可视化清单</title>
-<link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" href="assets/styles/fonts.css">
+<link rel="stylesheet" href="assets/styles/base.css">
 <link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
 <link rel="stylesheet" href="assets/animations/animations.css">
-<link rel="stylesheet" href="assets/page_rail.css">
-<link rel="stylesheet" href="assets/site_header.css">
+<link rel="stylesheet" href="assets/styles/page_rail.css">
+<link rel="stylesheet" href="assets/styles/site_header.css">
 <style>
   :root {
     --ink: var(--text-1);
@@ -538,8 +538,8 @@
 </section>
 
 </div>
-<script src="assets/runtime.js"></script>
-<script src="assets/site_i18n.js"></script>
+<script src="assets/scripts/runtime.js"></script>
+<script src="assets/scripts/site_i18n.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".deck > .slide").forEach((slide) => {
@@ -557,51 +557,51 @@ const MODELS = [
     title: "Main workstation", category: "固定场景", status: "done",
     note: "table_main；主操作工作台。",
     color: [0.56, 0.49, 0.39],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_main.stl"]
+    files: ["assets/models/arenas/maholo_arena/table_main.stl"]
   },
   {
     title: "Side table R1 / FF", category: "固定场景", status: "done",
     note: "table_side_R1_FF；右侧前方工作台。",
     color: [0.52, 0.46, 0.37],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_side_R1_FF.stl"]
+    files: ["assets/models/arenas/maholo_arena/table_side_R1_FF.stl"]
   },
   {
     title: "Side table R2", category: "固定场景", status: "done",
     note: "table_side_R2；右侧后方工作台。",
     color: [0.50, 0.44, 0.36],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_side_R2.stl"]
+    files: ["assets/models/arenas/maholo_arena/table_side_R2.stl"]
   },
   {
     title: "Incubator table", category: "固定场景", status: "done",
     note: "table_incubator；培养箱设备台。",
     color: [0.58, 0.51, 0.41],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/table_incubator.stl"]
+    files: ["assets/models/arenas/maholo_arena/table_incubator.stl"]
   },
   {
     title: "Pipette rack", category: "固定场景", status: "done",
     note: "arena 静态 fixture；pipette 本体由 runtime object 加载。",
     color: [0.44, 0.48, 0.54],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/SinglePipetteRack_4.stl"]
+    files: ["assets/models/arenas/SinglePipetteRack_4.stl"]
   },
   {
     title: "1.5 ml tube rack", category: "固定场景", status: "done",
     note: "有 visual 和分解 collision，可用于 slot / placement 定义。",
     color: [0.38, 0.54, 0.58],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/1.5ml_tube_rack.stl"]
+    files: ["assets/models/arenas/1.5ml_tube_rack.stl"]
   },
   {
     title: "Tube storage 48", category: "固定场景", status: "done",
     note: "适合定义 sample storage 和 retrieve container 任务。",
     color: [0.42, 0.56, 0.50],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/1.5ml_tube_storage48.stl"]
+    files: ["assets/models/arenas/1.5ml_tube_storage48.stl"]
   },
   {
     title: "Tip / chip box", category: "固定场景", status: "todo",
     note: "几何存在；单个 tip 的 available / used / attached 状态未建模。",
     color: [0.68, 0.54, 0.31],
     files: [
-      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/ChipBOX_200μl.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/ChipBOX_5ml.stl"
+      "assets/models/arenas/ChipBOX_200μl.stl",
+      "assets/models/arenas/ChipBOX_5ml.stl"
     ]
   },
   {
@@ -609,30 +609,30 @@ const MODELS = [
     note: "Opener / Pipette_Push / Centrifuge_tool 当前是静态几何。",
     color: [0.43, 0.43, 0.43],
     files: [
-      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/Opener.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/Pipette_Push.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/arenas/meshes/maholo_arena/Centrifuge_tool.stl"
+      "assets/models/arenas/maholo_arena/Opener.stl",
+      "assets/models/arenas/maholo_arena/Pipette_Push.stl",
+      "assets/models/arenas/maholo_arena/Centrifuge_tool.stl"
     ]
   },
   {
     title: "P1000 pipette", category: "可移动物品", status: "done",
     note: "4 个默认实例；free joint；64 个 collision mesh。",
     color: [0.18, 0.50, 0.78],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/pipette/pipette.obj"]
+    files: ["assets/models/objects/pipette/pipette.obj"]
   },
   {
     title: "1.5 ml tube", category: "可移动物品", status: "done",
     note: "8 个默认实例；free joint；可作为样品容器。",
     color: [0.88, 0.30, 0.26],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/1.5ml_tube.stl"]
+    files: ["assets/models/objects/1.5ml_tube.stl"]
   },
   {
     title: "4°C cool incubator", category: "可交互仪器", status: "done",
     note: "body + door；已有 hinge 和开门任务。内部槽位 / 温度状态未完成。",
     color: [0.67, 0.60, 0.48],
     files: [
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/cool_incubator_4c/cool_incubator_4c_body_visual.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/cool_incubator_4c/cool_incubator_4c_door_visual.stl"
+      "assets/models/objects/cool_incubator_4c/cool_incubator_4c_body_visual.stl",
+      "assets/models/objects/cool_incubator_4c/cool_incubator_4c_door_visual.stl"
     ]
   },
   {
@@ -640,10 +640,10 @@ const MODELS = [
     note: "outer door / inner door / latch 已有关节和多阶段任务。CO2 / 温度语义未完成。",
     color: [0.66, 0.62, 0.52],
     files: [
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_body_visual.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_outerdoor_visual.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_innerdoor_visual.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/co2_incubator/CO2incubator_innerlever_visual.stl"
+      "assets/models/objects/co2_incubator/CO2incubator_body_visual.stl",
+      "assets/models/objects/co2_incubator/CO2incubator_outerdoor_visual.stl",
+      "assets/models/objects/co2_incubator/CO2incubator_innerdoor_visual.stl",
+      "assets/models/objects/co2_incubator/CO2incubator_innerlever_visual.stl"
     ]
   },
   {
@@ -651,41 +651,41 @@ const MODELS = [
     note: "body + door；已有 hinge 和开门任务。内部存储槽位未完成。",
     color: [0.62, 0.66, 0.71],
     files: [
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/deep_freezer/deepFreezer_body_visual.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/deep_freezer/deepFreezer_door_visual.stl"
+      "assets/models/objects/deep_freezer/deepFreezer_body_visual.stl",
+      "assets/models/objects/deep_freezer/deepFreezer_door_visual.stl"
     ]
   },
   {
     title: "Thermal cycler", category: "实验仪器", status: "todo",
     note: "几何存在；lid joint、program/running state 未完成。",
     color: [0.45, 0.45, 0.50],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/thermal_cycler/thermal_cycler.stl"]
+    files: ["assets/models/objects/thermal_cycler/thermal_cycler.stl"]
   },
   {
     title: "MX-307", category: "实验仪器", status: "todo",
     note: "几何存在；运行模式和设备状态未完成。",
     color: [0.52, 0.52, 0.47],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/mx307/mx307.stl"]
+    files: ["assets/models/objects/mx307/mx307.stl"]
   },
   {
     title: "Microtube mixer", category: "实验仪器", status: "todo",
     note: "几何存在；mixing / running / duration 状态未完成。",
     color: [0.42, 0.47, 0.58],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/microtube_mixer/microtube_mixer.stl"]
+    files: ["assets/models/objects/microtube_mixer/microtube_mixer.stl"]
   },
   {
     title: "Vortex mixer", category: "实验仪器", status: "todo",
     note: "几何存在；press / activation 状态未完成。",
     color: [0.38, 0.49, 0.62],
-    files: ["assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/vortex_mixer/vortex_mixer.stl"]
+    files: ["assets/models/objects/vortex_mixer/vortex_mixer.stl"]
   },
   {
     title: "Block baths", category: "实验仪器", status: "todo",
     note: "block thermostatic bath / cool block bath；温度和占用状态未完成。",
     color: [0.52, 0.58, 0.52],
     files: [
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/block_thermostatic_bath/block_thermostatic_bath.stl",
-      "assets/models/robosuite_maholo/robosuite/models/assets/objects/meshes/cool_block_bath/cool_block_bath.stl"
+      "assets/models/objects/block_thermostatic_bath/block_thermostatic_bath.stl",
+      "assets/models/objects/cool_block_bath/cool_block_bath.stl"
     ]
   }
 ];
