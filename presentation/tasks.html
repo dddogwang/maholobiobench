@@ -21,7 +21,9 @@
   .mini-table th, .mini-table td { padding: 13px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .mini-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); font-weight: 800; }
   .mini-table tr:hover td { background: var(--surface-2); }
-  .mini-table td.nowrap { white-space: nowrap; }
+  .mini-table td.nowrap { white-space: normal; }
+  .mini-table td.nowrap code { white-space: nowrap; }
+  .mini-table td:nth-child(2) { white-space: nowrap; }
   .section-note { margin-top: 18px; font-size: 18px; line-height: 1.5; color: var(--muted); }
   .output-box { margin-top: 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 18px 20px; }
   .output-box h4 { margin: 0 0 12px; font-size: 22px; }
@@ -62,7 +64,7 @@
     <h1 class="title anim-fade-up" data-anim="fade-up" data-i18n="tasks.cover_title">当前已经定义了哪些任务</h1>
     <p class="lead" data-i18n="tasks.cover_lead">覆盖三层级任务定义，以及对应的协议状态、评价指标和统一输出格式。</p>
     <div class="tag-row">
-      <span class="tag" data-i18n="tasks.cover_tag_pool">5 + 8 + 8 task pool</span>
+      <span class="tag" data-i18n="tasks.cover_tag_pool">6 + 8 + 8 task pool</span>
       <span class="tag" data-i18n="tasks.cover_tag_status">Implementation status</span>
       <span class="tag" data-i18n="tasks.cover_tag_protocol">Protocol state</span>
       <span class="tag" data-i18n="tasks.cover_tag_output">Episode output format</span>
@@ -98,9 +100,15 @@
         </tr>
         <tr>
           <td><code data-i18n="tasks.task_transport_held_object">TransportHeldObject</code></td>
-          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="status partial" data-i18n="tasks.status_partial">部分实现</td>
           <td class="nowrap" data-i18n="tasks.state_held_object">held object pose / trajectory</td>
           <td data-i18n="tasks.metrics_transport">success, target pose error, orientation error, smoothness, collision</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_place_object_at_target">PlaceObjectAtTarget</code></td>
+          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="nowrap" data-i18n="tasks.state_place_target">released object pose / placement stability</td>
+          <td data-i18n="tasks.metrics_place_target">success, target pose error, placement stability, object displacement, collision</td>
         </tr>
         <tr>
           <td><code data-i18n="tasks.task_open_articulated_equipment">OpenArticulatedEquipment</code></td>
@@ -241,6 +249,12 @@
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
           <td class="nowrap" data-i18n="tasks.state_device_protocol">device state + timing/temperature protocol</td>
           <td data-i18n="tasks.metrics_device_workflow">protocol completion, equipment state error, timing violation, temperature zone violation</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_cell_culture_passage_simplified">CellCulturePassageSimplified</code></td>
+          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="nowrap" data-i18n="tasks.state_cell_culture">media-change + CO2 incubator + liquid semantics</td>
+          <td data-i18n="tasks.metrics_cell_culture">protocol completion, progress score, media volume error, contamination, incubator state success</td>
         </tr>
       </tbody>
     </table>

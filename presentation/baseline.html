@@ -59,9 +59,9 @@
   <section class="slide" data-title="Cover">
     <p class="kicker" data-i18n="baseline.cover_kicker">MaholoBioBench · Baseline Plan</p>
     <h1 class="title anim-fade-up" data-anim="fade-up" data-i18n="baseline.cover_title">Baseline 训练与评价记录</h1>
-    <p class="lead" data-i18n="baseline.cover_lead">环境目标任务池为 5 + 8 + 8；首轮 baseline 只覆盖 4 + 2 + 2 个代表任务，用来建立可执行性、难度梯度和指标区分度。</p>
+    <p class="lead" data-i18n="baseline.cover_lead">环境目标任务池为 6 + 8 + 8；首轮 baseline 只覆盖 4 + 2 + 2 个代表任务，用来建立可执行性、难度梯度和指标区分度。</p>
     <div class="summary-grid">
-      <div class="metric"><strong data-i18n="baseline.pool_count">5 + 8 + 8</strong><span data-i18n="baseline.pool_label">环境目标任务池：Level 1 / Level 2 / Level 3</span></div>
+      <div class="metric"><strong data-i18n="baseline.pool_count">6 + 8 + 8</strong><span data-i18n="baseline.pool_label">环境目标任务池：Level 1 / Level 2 / Level 3</span></div>
       <div class="metric"><strong data-i18n="baseline.eval_count">4 + 2 + 2</strong><span data-i18n="baseline.eval_label">baseline 首轮训练与评价覆盖</span></div>
       <div class="metric"><strong data-i18n="baseline.output_count">SR + Metrics</strong><span data-i18n="baseline.output_label">统一记录成功率、误差、碰撞、协议进度和违规</span></div>
     </div>
@@ -84,8 +84,8 @@
       <tbody>
         <tr>
           <td><code>Level 1</code></td>
-          <td><code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>OpenArticulatedEquipment</code><br><code>PressOrToggleInstrumentControl</code></td>
-          <td data-i18n="baseline.reason_l1">覆盖 reach、grasp、articulated opening 和 instrument control，验证基础动作可学性。</td>
+          <td><code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>TransportHeldObject</code><br><code>OpenArticulatedEquipment</code></td>
+          <td data-i18n="baseline.reason_l1">覆盖 reach、grasp、transport、articulated opening 四类动作原语（均有已实现/部分实现环境），验证基础动作可学性。</td>
           <td class="status partial" data-i18n="baseline.status_ready_partial">部分可跑</td>
         </tr>
         <tr>
@@ -102,7 +102,7 @@
         </tr>
       </tbody>
     </table>
-    <div class="note-box" data-i18n="baseline.subset_note">baseline 子集不是完整任务池；它只用于第一版论文结果表，完整环境仍按 5 + 8 + 8 的任务池组织。</div>
+    <div class="note-box" data-i18n="baseline.subset_note">baseline 子集不是完整任务池；它只用于第一版论文结果表，完整环境仍按 6 + 8 + 8 的任务池组织。</div>
     <div class="deck-footer"><span class="dim2" data-i18n="baseline.footer_subset">subset</span><span class="slide-number" data-current="2" data-total="4"></span></div>
     <div class="notes" data-i18n="baseline.note_subset">这里避免承诺所有任务都已经训练，只写首轮 baseline 的最小覆盖面。</div>
   </section>
@@ -157,8 +157,8 @@
       <tbody>
         <tr><td><code>ReachTargetPose</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l1">Level 1 几何动作</td></tr>
         <tr><td><code>GraspLabObject</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l1">Level 1 几何动作</td></tr>
+        <tr><td><code>TransportHeldObject</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l1">Level 1 几何动作</td></tr>
         <tr><td><code>OpenArticulatedEquipment</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_equipment">设备关节状态</td></tr>
-        <tr><td><code>PressOrToggleInstrumentControl</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_equipment">设备控制状态</td></tr>
         <tr><td><code>RetrieveContainer</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l2">实验室语义技能</td></tr>
         <tr><td><code>TransferLiquid</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l2">实验室语义技能</td></tr>
         <tr><td><code>RetrieveAndTransferSample</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l3">长流程协议</td></tr>

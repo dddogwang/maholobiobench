@@ -176,6 +176,7 @@
     gap: 14px;
   }
   .scene-stage {
+    position: relative;
     min-height: 0;
     height: min(74vh, 760px);
     border: 1px solid var(--line);
@@ -183,11 +184,24 @@
     overflow: hidden;
     background: var(--surface);
   }
+  .scene-stage .scene-thumb,
   .scene-stage canvas {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     display: block;
   }
+  .scene-stage .scene-thumb {
+    object-fit: contain;
+    z-index: 0;
+    transition: opacity .25s ease;
+  }
+  .scene-stage canvas {
+    z-index: 1;
+    background: transparent;
+  }
+  .scene-stage.live .scene-thumb { opacity: 0; }
   .scene-caption {
     display: flex;
     justify-content: space-between;
@@ -254,7 +268,7 @@
     padding-right: 8px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(var(--model-card-min-width), 1fr));
-    grid-auto-rows: 220px;
+    grid-auto-rows: 240px;
     gap: var(--model-grid-gap);
     width: 100%;
     align-content: start;
@@ -262,8 +276,8 @@
   .model-slot {
     width: 100%;
     min-width: 0;
-    height: 220px;
-    min-height: 220px;
+    height: 240px;
+    min-height: 240px;
     contain: layout size;
   }
   .model {
@@ -273,9 +287,9 @@
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 8px;
-    height: 220px;
+    height: 240px;
     display: grid;
-    grid-template-rows: 132px auto;
+    grid-template-rows: 116px auto;
     overflow: hidden;
     contain: layout paint size;
     transition: opacity .16s ease, filter .16s ease, border-color .16s ease;
@@ -285,17 +299,36 @@
     visibility: hidden;
     pointer-events: none;
   }
-  .model canvas {
+  .model-stage {
+    position: relative;
     width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    height: 132px;
-    display: block;
+    height: 100%;
+    overflow: hidden;
     background: var(--surface);
+    border-bottom: 1px solid var(--line);
   }
+  .model-stage .thumb,
+  .model-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .model-stage .thumb {
+    object-fit: contain;
+    padding: 8px;
+    z-index: 0;
+    transition: opacity .25s ease;
+  }
+  .model-stage canvas {
+    z-index: 1;
+    background: transparent;
+  }
+  .model.live .model-stage .thumb { opacity: 0; }
   .model-preview {
     width: 100%;
-    height: 132px;
+    height: 116px;
     display: grid;
     place-items: center;
     padding: 12px;
@@ -333,10 +366,19 @@
   .mini.done { color: #fff; background: var(--done); }
   .mini.todo { color: #fff; background: var(--todo); }
   .model p {
-    margin: 8px 0 0;
+    margin: 7px 0 0;
     font-size: 12px;
     line-height: 1.35;
     color: var(--muted);
+  }
+  .model-cat strong { color: var(--ink); font-weight: 800; }
+  .model-spec {
+    margin-top: 5px !important;
+    font-size: 11px;
+    line-height: 1.32;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    word-break: break-word;
   }
   footer {
     border-top: 1px solid var(--line);
@@ -423,19 +465,19 @@
       grid-template-columns: repeat(2, minmax(0, calc((100% - 14px) / 2)));
       max-width: none;
       margin-inline: 0;
-      grid-auto-rows: 252px;
+      grid-auto-rows: 272px;
     }
     .model-slot,
     .model {
-      height: 252px;
-      min-height: 252px;
+      height: 272px;
+      min-height: 272px;
     }
     .model {
-      grid-template-rows: 156px auto;
+      grid-template-rows: 150px auto;
     }
     .model canvas,
     .model-preview {
-      height: 156px;
+      height: 150px;
     }
   }
   @media (max-width: 900px) {
@@ -504,6 +546,7 @@
   <section class="main">
     <section class="scene-shell">
       <div class="scene-stage">
+        <img class="scene-thumb" src="assets/thumbnails/scene_maholo.png" alt="Maholo laboratory">
         <canvas id="sceneCanvas"></canvas>
       </div>
     </section>
@@ -558,151 +601,151 @@ const SCENE_MODELS = [
 const ARENA_WORLD_MODELS = [
   {
     title: "base_robot", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/base_robot.stl"]
   },
   {
     title: "base_centrifuge", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/base_centrifuge.stl"]
   },
   {
     title: "base_deep_freezer", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/base_deep_freezer.stl"]
   },
   {
     title: "table_main", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_main.stl"]
   },
   {
     title: "table_side_R1_FF", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_side_R1_FF.stl"]
   },
   {
     title: "table_side_R2", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_side_R2.stl"]
   },
   {
     title: "table_incubator", category: "固定场景", status: "done",
-    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_incubator.stl"]
   },
   {
-    title: "Safety fence_frame", category: "固定场景", status: "done",
-    note: "使用 19 个 collision mesh；冲撞模型已制作。",
+    title: "Safety_fence_frame", category: "固定场景", status: "done",
+    spec: "1 visual · safety fence frame",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/Safety_fence_frame.stl"]
   },
   {
-    title: "Chip_off", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "Chip_off", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/Chip_off.stl"]
   },
   {
     title: "SinglePipetteRack_4", category: "固定场景", status: "done",
-    note: "使用 7 个 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · 7 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/SinglePipetteRack_4/SinglePipetteRack_4.stl"]
   },
   {
-    title: "SinglePipetteRack_5", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "SinglePipetteRack_5", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/SinglePipetteRack_5.stl"]
   },
   {
     title: "1.5ml_tube_rack", category: "固定场景", status: "done",
-    note: "使用 34 个 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · 34 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/1.5ml_tube_rack.stl"]
   },
   {
     title: "1.5ml_tube_storage48", category: "固定场景", status: "done",
-    note: "使用 59 个 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · 59 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/1.5ml_tube_storage48.stl"]
   },
   {
-    title: "Storage_50mlx6", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "Storage_50mlx6", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/Storage_50mlx6.stl"]
   },
   {
-    title: "Storage_15ml-6", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "Storage_15ml-6", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/Storage_15ml-6.stl"]
   },
   {
-    title: "Workshop_15mlx5", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "Workshop_15mlx5", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/Workshop_15mlx5.stl"]
   },
   {
-    title: "Workshop_50mlx3", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "Workshop_50mlx3", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/Workshop_50mlx3.stl"]
   },
   {
-    title: "ChipBOXRack_200μl", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "ChipBOXRack_200μl", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/ChipBOXRack_200ul.stl"]
   },
   {
-    title: "ChipBOXRack_1000μl", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "ChipBOXRack_1000μl", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/ChipBOXRack_1000ul.stl"]
   },
   {
-    title: "ChipBOX_5ml", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "ChipBOX_5ml", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/ChipBOX_5ml.stl"]
   },
   {
-    title: "ChipBOX_200μl", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "ChipBOX_200μl", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/ChipBOX_200ul.stl"]
   },
   {
     title: "Centrifuge_tool", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/Centrifuge_tool.stl"]
   },
   {
     title: "Opener", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/Opener.stl"]
   },
   {
     title: "Pipette_Push", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    spec: "1 visual · shared base collision (arena01–14)",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/Pipette_Push.stl"]
   },
   {
-    title: "PCR_PlateMainRack_withCooling", category: "固定场景", status: "done",
-    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    title: "PCR_PlateMainRack_withCooling", category: "固定场景", status: "todo",
+    spec: "1 visual · 1 collision ×3 instances",
     color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/PCR_PlateMainRack_withCooling.stl"]
   }
@@ -710,55 +753,55 @@ const ARENA_WORLD_MODELS = [
 const EQUIPMENT_MODELS = [
   {
     title: "4°C cool incubator", category: "可交互仪器", status: "done",
-    note: "来自 cool_incubator_4c.xml；2 个 visual mesh；7 个 collision mesh。",
+    spec: "2 visual · 7 collision · hinge → OpenCoolIncubator",
     color: [0.67, 0.6, 0.48],
     files: ["assets/models/equipments/cool_incubator_4c/cool_incubator_4c_body_visual.stl", "assets/models/equipments/cool_incubator_4c/cool_incubator_4c_door_visual.stl"]
   },
   {
     title: "CO2 incubator", category: "可交互仪器", status: "done",
-    note: "来自 co2_incubator.xml；4 个 visual mesh；15 个 collision mesh。",
+    spec: "4 visual · 15 collision · outer+inner door+latch → OpenCO2Incubator (3-phase)",
     color: [0.66, 0.62, 0.52],
     files: ["assets/models/equipments/co2_incubator/CO2incubator_body_visual.stl", "assets/models/equipments/co2_incubator/CO2incubator_outerdoor_visual.stl", "assets/models/equipments/co2_incubator/CO2incubator_innerdoor_visual.stl", "assets/models/equipments/co2_incubator/CO2incubator_innerlever_visual.stl"]
   },
   {
     title: "Deep freezer", category: "可交互仪器", status: "done",
-    note: "来自 deep_freezer.xml；2 个 visual mesh；5 个 collision mesh。",
+    spec: "2 visual · 5 collision · hinge → OpenDeepFreezer",
     color: [0.62, 0.66, 0.71],
     files: ["assets/models/equipments/deep_freezer/deepFreezer_body_visual.stl", "assets/models/equipments/deep_freezer/deepFreezer_door_visual.stl"]
   },
   {
     title: "Thermal cycler", category: "实验仪器", status: "todo",
-    note: "来自 thermal_cycler.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    spec: "1 visual · 1 collision · static (lid / program state TBD)",
     color: [0.45, 0.45, 0.5],
     files: ["assets/models/equipments/thermal_cycler/thermal_cycler.stl"]
   },
   {
     title: "MX-307", category: "实验仪器", status: "todo",
-    note: "来自 mx307.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    spec: "1 visual · 1 collision · static (device state TBD)",
     color: [0.52, 0.52, 0.47],
     files: ["assets/models/equipments/mx307/mx307.stl"]
   },
   {
     title: "Microtube mixer", category: "实验仪器", status: "todo",
-    note: "来自 microtube_mixer.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    spec: "1 visual · 1 collision · static (run state TBD)",
     color: [0.42, 0.47, 0.58],
     files: ["assets/models/equipments/microtube_mixer/microtube_mixer.stl"]
   },
   {
     title: "Vortex mixer", category: "实验仪器", status: "todo",
-    note: "来自 vortex_mixer.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    spec: "1 visual · 1 collision · static (run state TBD)",
     color: [0.38, 0.49, 0.62],
     files: ["assets/models/equipments/vortex_mixer/vortex_mixer.stl"]
   },
   {
     title: "Block thermostatic bath", category: "实验仪器", status: "todo",
-    note: "来自 block_thermostatic_bath.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    spec: "2 visual · 2 collision · static (temp / slot state TBD)",
     color: [0.52, 0.58, 0.52],
     files: ["assets/models/equipments/block_thermostatic_bath/block_thermostatic_bath.stl"]
   },
   {
     title: "Cool block bath", category: "实验仪器", status: "todo",
-    note: "来自 cool_block_bath.xml；2 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    spec: "2 visual · 2 collision · static (temp / slot state TBD)",
     color: [0.44, 0.58, 0.64],
     files: ["assets/models/equipments/cool_block_bath/cool_block_bath.stl", "assets/models/equipments/cool_block_bath/block.stl"]
   }
@@ -766,13 +809,13 @@ const EQUIPMENT_MODELS = [
 const MOVABLE_MODELS = [
   {
     title: "P1000 pipette", category: "可移动物品", status: "done",
-    note: "来自 P1000Pipette_withtip.xml；1 个 visual mesh；64 个 collision mesh。",
+    spec: "1 visual · 64 collision · free joint (grasp)",
     color: [0.18, 0.5, 0.78],
     files: ["assets/models/objects/pipette/pipette.obj"]
   },
   {
     title: "1.5 ml tube", category: "可移动物品", status: "done",
-    note: "来自 1.5ml_tube.xml；1 个 visual mesh；2 个 collision mesh。",
+    spec: "1 visual · 2 collision · free joint",
     color: [0.88, 0.3, 0.26],
     files: ["assets/models/objects/1.5ml_tube.stl"]
   }
@@ -840,6 +883,9 @@ const modelSlots = Array.from({ length: MODELS.length }, (_, index) => {
   slot.dataset.index = String(index);
   return slot;
 });
+function thumbId(t) {
+  return t.trim().replace(/[^0-9A-Za-z]+/g, "_").replace(/^_+|_+$/g, "");
+}
 for (let i = 0; i < MODELS.length; i++) {
   const spec = MODELS[i];
   const group = assetGroup(spec.category);
@@ -848,8 +894,16 @@ for (let i = 0; i < MODELS.length; i++) {
   card.className = "model";
   card.dataset.group = group;
   modelSlots[i].dataset.group = card.dataset.group;
+  const stage = document.createElement("div");
+  stage.className = "model-stage";
+  const thumb = document.createElement("img");
+  thumb.className = "thumb";
+  thumb.loading = "lazy";
+  thumb.alt = spec.title;
+  thumb.src = "assets/thumbnails/" + thumbId(spec.title) + ".png";
   const canvas = document.createElement("canvas");
   canvas.dataset.modelIndex = String(i);
+  stage.append(thumb, canvas);
   const meta = document.createElement("div");
   meta.className = "model-meta";
   meta.innerHTML = `
@@ -857,8 +911,9 @@ for (let i = 0; i < MODELS.length; i++) {
       <h3>${spec.title}</h3>
       <span class="mini ${spec.status === "done" ? "done" : "todo"}" data-i18n="${statusKey}">${spec.status === "done" ? "DONE" : "NOT DONE"}</span>
     </div>
-    <p><strong data-i18n="${assetCategoryKey(group)}">${spec.category}</strong></p>`;
-  card.append(canvas, meta);
+    <p class="model-cat"><strong data-i18n="${assetCategoryKey(group)}">${spec.category}</strong></p>
+    ${spec.spec ? `<p class="model-spec">${spec.spec}</p>` : ""}`;
+  card.append(stage, meta);
   modelCards.push(card);
   if (previewObserver) {
     previewObserver.observe(canvas);
@@ -881,8 +936,10 @@ setTimeout(scanAssetPreviews, 80);
 setTimeout(scanAssetPreviews, 300);
 
 function createSceneViewer(canvas, specs) {
+  const stage = canvas.closest(".scene-stage");
   const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
-  if (!gl) return setCanvasMessage(canvas, "WebGL 不可用");
+  if (!gl) return;
+  canvas.addEventListener("webglcontextlost", (e) => { e.preventDefault(); if (stage) stage.classList.remove("live"); });
 
   const program = makeProgram(gl);
   const loc = {
@@ -906,7 +963,6 @@ function createSceneViewer(canvas, specs) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.normals), gl.STATIC_DRAW);
   }).catch(err => {
     console.warn("scene", err);
-    setCanvasMessage(canvas, "场景加载失败");
   });
 
   function draw(t) {
@@ -941,6 +997,7 @@ function createSceneViewer(canvas, specs) {
       gl.enableVertexAttribArray(loc.normal);
       gl.vertexAttribPointer(loc.normal, 3, gl.FLOAT, false, 0, 0);
       gl.drawArrays(gl.TRIANGLES, 0, mesh.positions.length / 3);
+      if (stage && !stage.classList.contains("live")) stage.classList.add("live");
     }
     requestAnimationFrame(draw);
   }
@@ -999,8 +1056,10 @@ function quatToMat3(w, x, y, z) {
 }
 
 function createViewer(canvas, spec) {
+  const card = canvas.closest(".model");
   const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
-  if (!gl) return setCanvasMessage(canvas, "WebGL 不可用");
+  if (!gl) return;
+  canvas.addEventListener("webglcontextlost", (e) => { e.preventDefault(); if (card) card.classList.remove("live"); });
 
   const program = makeProgram(gl);
   const loc = {
@@ -1023,7 +1082,6 @@ function createViewer(canvas, spec) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mesh.normals), gl.STATIC_DRAW);
   }).catch(err => {
     console.warn(spec.title, err);
-    setCanvasMessage(canvas, "模型加载失败");
   });
 
   function draw(t) {
@@ -1051,6 +1109,7 @@ function createViewer(canvas, spec) {
       gl.enableVertexAttribArray(loc.normal);
       gl.vertexAttribPointer(loc.normal, 3, gl.FLOAT, false, 0, 0);
       gl.drawArrays(gl.TRIANGLES, 0, mesh.positions.length / 3);
+      if (card && !card.classList.contains("live")) card.classList.add("live");
     }
     requestAnimationFrame(draw);
   }
