@@ -9,7 +9,8 @@
     "nav": {
       "overview": "总览",
       "tasks": "任务",
-      "assets": "资产"
+      "assets": "资产",
+      "baseline": "基准"
     }
   },
   "ja": {
@@ -21,7 +22,8 @@
     "nav": {
       "overview": "概要",
       "tasks": "タスク",
-      "assets": "資産"
+      "assets": "資産",
+      "baseline": "ベースライン"
     }
   },
   "en": {
@@ -33,7 +35,8 @@
     "nav": {
       "overview": "Overview",
       "tasks": "Tasks",
-      "assets": "Assets"
+      "assets": "Assets",
+      "baseline": "Baseline"
     }
   }
 };

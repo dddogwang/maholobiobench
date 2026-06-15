@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="academic-paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MaholoBioBench · Baseline</title>
+<link rel="stylesheet" href="assets/styles/fonts.css">
+<link rel="stylesheet" href="assets/styles/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<link rel="stylesheet" href="assets/styles/page_rail.css">
+<link rel="stylesheet" href="assets/styles/site_header.css">
+<style>
+  .slide { letter-spacing: 0; }
+  .title { font-size: 72px; line-height: 1.06; margin: 18px 0; }
+  .h2 { font-size: 50px; line-height: 1.12; margin: 10px 0 20px; }
+  .lead { font-size: 28px; line-height: 1.48; color: var(--muted); max-width: none; width: 100%; }
+  .tag-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px; }
+  .tag { border: 1px solid var(--border); border-radius: 999px; padding: 10px 16px; background: var(--surface); font-size: 19px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 30px; }
+  .metric { border-top: 2px solid var(--border); padding-top: 18px; }
+  .metric strong { display: block; font-size: 46px; line-height: 1; margin-bottom: 8px; color: var(--accent); }
+  .metric span { color: var(--muted); font-size: 19px; line-height: 1.4; }
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 17px; }
+  .mini-table th, .mini-table td { padding: 12px 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .mini-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); font-weight: 800; }
+  .mini-table tr:hover td { background: var(--surface-2); }
+  .status { font-weight: 800; }
+  .status.done { color: var(--good); }
+  .status.partial { color: var(--warn); }
+  .status.todo { color: var(--bad); }
+  .note-box { margin-top: 22px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); padding: 18px 20px; font-size: 21px; line-height: 1.45; color: var(--muted); }
+  code { font-size: .92em; }
+  @media (max-width: 900px) {
+    .title { font-size: 54px; }
+    .h2 { font-size: 36px; }
+    .lead { font-size: 22px; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .mini-table { font-size: 14px; }
+  }
+</style>
+</head>
+<body data-themes="academic-paper,minimal-white,corporate-clean,swiss-grid,engineering-whiteprint,blueprint,tokyo-night" data-theme-base="assets/themes/">
+<div class="site-header">
+  <nav class="page-rail" aria-label="页面导航">
+    <a href="index.html" data-i18n="nav.overview">总览</a>
+    <a href="env_assets.html" data-i18n="nav.assets">资产</a>
+    <a href="tasks.html" data-i18n="nav.tasks">任务</a>
+    <a href="baseline.html" class="is-active" data-i18n="nav.baseline">Baseline</a>
+  </nav>
+  <div class="lang-switch" aria-label="Language switch">
+    <button type="button" data-lang="zh" class="is-active" data-i18n="lang.zh">中文</button>
+    <button type="button" data-lang="ja" data-i18n="lang.ja">日本語</button>
+    <button type="button" data-lang="en" data-i18n="lang.en">English</button>
+  </div>
+</div>
+<div class="deck">
+
+  <section class="slide" data-title="Cover">
+    <p class="kicker" data-i18n="baseline.cover_kicker">MaholoBioBench · Baseline Plan</p>
+    <h1 class="title anim-fade-up" data-anim="fade-up" data-i18n="baseline.cover_title">Baseline 训练与评价记录</h1>
+    <p class="lead" data-i18n="baseline.cover_lead">环境目标任务池为 5 + 8 + 8；首轮 baseline 只覆盖 4 + 2 + 2 个代表任务，用来建立可执行性、难度梯度和指标区分度。</p>
+    <div class="summary-grid">
+      <div class="metric"><strong data-i18n="baseline.pool_count">5 + 8 + 8</strong><span data-i18n="baseline.pool_label">环境目标任务池：Level 1 / Level 2 / Level 3</span></div>
+      <div class="metric"><strong data-i18n="baseline.eval_count">4 + 2 + 2</strong><span data-i18n="baseline.eval_label">baseline 首轮训练与评价覆盖</span></div>
+      <div class="metric"><strong data-i18n="baseline.output_count">SR + Metrics</strong><span data-i18n="baseline.output_label">统一记录成功率、误差、碰撞、协议进度和违规</span></div>
+    </div>
+    <div class="deck-footer"><span class="dim2" data-i18n="baseline.footer_overview">overview</span><span class="slide-number" data-current="1" data-total="4"></span></div>
+    <div class="notes" data-i18n="baseline.note_cover">这一页只定义 baseline 记录范围：完整任务池和首轮评估子集分开写。</div>
+  </section>
+
+  <section class="slide" data-title="Task Subset">
+    <p class="kicker" data-i18n="baseline.subset_kicker">Evaluation Subset</p>
+    <h2 class="h2" data-i18n="baseline.subset_title">首轮 baseline 覆盖 4 + 2 + 2 个任务</h2>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th data-i18n="baseline.col_level">层级</th>
+          <th data-i18n="baseline.col_selected">baseline 任务</th>
+          <th data-i18n="baseline.col_reason">选择目的</th>
+          <th data-i18n="baseline.col_status">状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Level 1</code></td>
+          <td><code>ReachTargetPose</code><br><code>GraspLabObject</code><br><code>OpenArticulatedEquipment</code><br><code>PressOrToggleInstrumentControl</code></td>
+          <td data-i18n="baseline.reason_l1">覆盖 reach、grasp、articulated opening 和 instrument control，验证基础动作可学性。</td>
+          <td class="status partial" data-i18n="baseline.status_ready_partial">部分可跑</td>
+        </tr>
+        <tr>
+          <td><code>Level 2</code></td>
+          <td><code>RetrieveContainer</code><br><code>TransferLiquid</code></td>
+          <td data-i18n="baseline.reason_l2">覆盖容器检索和液体转移，验证实验室语义状态与基础技能组合。</td>
+          <td class="status todo" data-i18n="baseline.status_pending_impl">待实现后训练</td>
+        </tr>
+        <tr>
+          <td><code>Level 3</code></td>
+          <td><code>RetrieveAndTransferSample</code><br><code>PrepareDilutionSeries</code></td>
+          <td data-i18n="baseline.reason_l3">覆盖长流程样品转移和稀释序列，验证协议进度和累计误差。</td>
+          <td class="status todo" data-i18n="baseline.status_pending_impl">待实现后训练</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note-box" data-i18n="baseline.subset_note">baseline 子集不是完整任务池；它只用于第一版论文结果表，完整环境仍按 5 + 8 + 8 的任务池组织。</div>
+    <div class="deck-footer"><span class="dim2" data-i18n="baseline.footer_subset">subset</span><span class="slide-number" data-current="2" data-total="4"></span></div>
+    <div class="notes" data-i18n="baseline.note_subset">这里避免承诺所有任务都已经训练，只写首轮 baseline 的最小覆盖面。</div>
+  </section>
+
+  <section class="slide" data-title="Methods">
+    <p class="kicker" data-i18n="baseline.methods_kicker">Methods</p>
+    <h2 class="h2" data-i18n="baseline.methods_title">baseline 方法与统一记录字段</h2>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th data-i18n="baseline.col_method">方法</th>
+          <th data-i18n="baseline.col_role">作用</th>
+          <th data-i18n="baseline.col_record">记录字段</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Scripted Expert</code></td>
+          <td data-i18n="baseline.role_scripted">生成可行示范和任务上限。</td>
+          <td data-i18n="baseline.record_common">SR、steps、collision、pose error、protocol progress、violations</td>
+        </tr>
+        <tr>
+          <td><code>Behavior Cloning</code></td>
+          <td data-i18n="baseline.role_bc">从 expert trajectories 学习，观察误差累积。</td>
+          <td data-i18n="baseline.record_common">SR、steps、collision、pose error、protocol progress、violations</td>
+        </tr>
+        <tr>
+          <td><code>State-Based RL</code></td>
+          <td data-i18n="baseline.role_rl">验证稀疏奖励和 protocol metrics 下的学习边界。</td>
+          <td data-i18n="baseline.record_common">SR、steps、collision、pose error、protocol progress、violations</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="deck-footer"><span class="dim2" data-i18n="baseline.footer_methods">methods</span><span class="slide-number" data-current="3" data-total="4"></span></div>
+    <div class="notes" data-i18n="baseline.note_methods">这里保留方法和记录字段，具体数值等实验跑完再填。</div>
+  </section>
+
+  <section class="slide" data-title="Results">
+    <p class="kicker" data-i18n="baseline.results_kicker">Result Table</p>
+    <h2 class="h2" data-i18n="baseline.results_title">结果表占位</h2>
+    <table class="mini-table">
+      <thead>
+        <tr>
+          <th data-i18n="baseline.col_task">任务</th>
+          <th data-i18n="baseline.col_expert">Expert SR</th>
+          <th data-i18n="baseline.col_bc">BC SR</th>
+          <th data-i18n="baseline.col_rl">RL SR</th>
+          <th data-i18n="baseline.col_protocol">Protocol score</th>
+          <th data-i18n="baseline.col_notes">备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ReachTargetPose</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l1">Level 1 几何动作</td></tr>
+        <tr><td><code>GraspLabObject</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l1">Level 1 几何动作</td></tr>
+        <tr><td><code>OpenArticulatedEquipment</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_equipment">设备关节状态</td></tr>
+        <tr><td><code>PressOrToggleInstrumentControl</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_equipment">设备控制状态</td></tr>
+        <tr><td><code>RetrieveContainer</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l2">实验室语义技能</td></tr>
+        <tr><td><code>TransferLiquid</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l2">实验室语义技能</td></tr>
+        <tr><td><code>RetrieveAndTransferSample</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l3">长流程协议</td></tr>
+        <tr><td><code>PrepareDilutionSeries</code></td><td>TBD</td><td>TBD</td><td>TBD</td><td>TBD</td><td data-i18n="baseline.result_note_l3">长流程协议</td></tr>
+      </tbody>
+    </table>
+    <div class="deck-footer"><span class="dim2" data-i18n="baseline.footer_results">results</span><span class="slide-number" data-current="4" data-total="4"></span></div>
+    <div class="notes" data-i18n="baseline.note_results">结果页只保留表格结构，后续实验数值进来后直接替换 TBD。</div>
+  </section>
+
+</div>
+<script src="assets/scripts/runtime.js"></script>
+<script src="assets/i18n/common.js"></script>
+<script src="assets/i18n/baseline.js"></script>
+<script src="assets/scripts/site_i18n.js"></script>
+</body>
+</html>
