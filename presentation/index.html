@@ -63,13 +63,13 @@
 <div class="site-header">
   <nav class="page-rail" aria-label="Page navigation">
     <a href="index.html" class="is-active" data-i18n="nav.overview">总览</a>
-    <a href="tasks.html" data-i18n="nav.tasks">任务汇报</a>
-    <a href="env_assets.html" data-i18n="nav.assets">资产页</a>
+    <a href="env_assets.html" data-i18n="nav.assets">资产</a>
+    <a href="tasks.html" data-i18n="nav.tasks">任务</a>
   </nav>
   <div class="lang-switch" aria-label="Language switch">
-    <button type="button" data-lang="zh" class="is-active">中文</button>
-    <button type="button" data-lang="ja">日本語</button>
-    <button type="button" data-lang="en">English</button>
+    <button type="button" data-lang="zh" class="is-active" data-i18n="lang.zh">中文</button>
+    <button type="button" data-lang="ja" data-i18n="lang.ja">日本語</button>
+    <button type="button" data-lang="en" data-i18n="lang.en">English</button>
   </div>
 </div>
 <div class="deck">
@@ -257,6 +257,10 @@
           <strong>Maholo 环境资产可视化</strong>
           <span>查看固定场景、可移动物品和可交互仪器的 3D 旋转模型。</span>
         </a>
+        <a class="resource-link" href="tasks.html">
+          <strong>任务</strong>
+          <span>查看三层级任务定义、实现状态、协议状态、评价指标和统一输出格式。</span>
+        </a>
       </div>
     </div>
     <div class="deck-footer"><span class="muted">MaholoBioBench · Links</span><span class="slide-number" data-current="11" data-total="11"></span></div>
@@ -265,8 +269,9 @@
 
 </div>
 <script src="assets/scripts/runtime.js"></script>
+<script src="assets/i18n/common.js"></script>
 <script src="assets/scripts/site_i18n.js"></script>
-<script src="assets/data/research_direction_translations.js"></script>
+<script src="assets/i18n/index.js"></script>
 <script>
 const translatableSelector = [
   ".slide .kicker",
@@ -281,8 +286,10 @@ const translatableSelector = [
   ".slide li",
   ".slide .table div",
   ".slide .flow .node",
+  ".slide .big",
   ".slide .resource-link strong",
   ".slide .resource-link span",
+  ".slide .notes",
   ".deck-footer span:first-child"
 ].join(",");
 
@@ -295,13 +302,17 @@ function setLanguage(lang) {
   document.documentElement.lang = lang === "zh" ? "zh-CN" : lang;
   translatableElements.forEach((el) => {
     const source = el.dataset.zh;
-    el.innerHTML = lang === "zh" ? source : (TRANSLATIONS[lang] && TRANSLATIONS[lang][source]) || source;
+    el.innerHTML = lang === "zh" ? source : (window.MaholoDeckTranslations[lang] && window.MaholoDeckTranslations[lang][source]) || source;
   });
   localStorage.setItem("maholobiobench-lang", lang);
 }
 
 window.addEventListener("maholobiobench:langchange", (event) => {
   setLanguage(event.detail.lang);
+});
+
+document.querySelectorAll(".lang-switch button[data-lang]").forEach((button) => {
+  button.addEventListener("click", () => setLanguage(button.dataset.lang));
 });
 
 setLanguage((window.MaholoSiteI18n && window.MaholoSiteI18n.getLang()) || localStorage.getItem("maholobiobench-lang") || "zh");

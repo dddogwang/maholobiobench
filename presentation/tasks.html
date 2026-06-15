@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MaholoBioBench · 任务汇报</title>
+<title>MaholoBioBench · 任务</title>
 <link rel="stylesheet" href="assets/styles/fonts.css">
 <link rel="stylesheet" href="assets/styles/base.css">
 <link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
@@ -45,13 +45,13 @@
 <div class="site-header">
   <nav class="page-rail" aria-label="页面导航">
     <a href="index.html" data-i18n="nav.overview">总览</a>
-    <a href="tasks.html" class="is-active" data-i18n="nav.tasks">任务汇报</a>
-    <a href="env_assets.html" data-i18n="nav.assets">资产页</a>
+    <a href="env_assets.html" data-i18n="nav.assets">资产</a>
+    <a href="tasks.html" class="is-active" data-i18n="nav.tasks">任务</a>
   </nav>
   <div class="lang-switch" aria-label="Language switch">
-    <button type="button" data-lang="zh" class="is-active">中文</button>
-    <button type="button" data-lang="ja">日本語</button>
-    <button type="button" data-lang="en">English</button>
+    <button type="button" data-lang="zh" class="is-active" data-i18n="lang.zh">中文</button>
+    <button type="button" data-lang="ja" data-i18n="lang.ja">日本語</button>
+    <button type="button" data-lang="en" data-i18n="lang.en">English</button>
   </div>
 </div>
 <div class="deck">
@@ -66,8 +66,8 @@
       <span class="tag" data-i18n="tasks.level3_kicker">Level 3</span>
       <span class="tag" data-i18n="tasks.cover_tags">Task / Status / State / Metrics / Output</span>
     </div>
-    <div class="deck-footer"><span class="dim2">overview</span><span class="slide-number" data-current="1" data-total="5"></span></div>
-    <div class="notes">封面只保留标题和一句话，不展开细节。</div>
+    <div class="deck-footer"><span class="dim2" data-i18n="tasks.footer_overview">overview</span><span class="slide-number" data-current="1" data-total="5"></span></div>
+    <div class="notes" data-i18n="tasks.note_cover">封面只保留标题和一句话，不展开细节。</div>
   </section>
 
   <section class="slide" data-title="Level 1">
@@ -84,39 +84,39 @@
       </thead>
       <tbody>
         <tr>
-          <td><code>ReachTargetPose</code></td>
+          <td><code data-i18n="tasks.task_reach_target_pose">ReachTargetPose</code></td>
           <td class="status done" data-i18n="tasks.status_done">已实现</td>
-          <td class="nowrap">几何状态；无样本/液体语义</td>
-          <td>success, position error, orientation error, collision, steps</td>
+          <td class="nowrap" data-i18n="tasks.state_geometry_only">几何状态；无样本/液体语义</td>
+          <td data-i18n="tasks.metrics_reach">success, position error, orientation error, collision, steps</td>
         </tr>
         <tr>
-          <td><code>GraspLabObject</code></td>
+          <td><code data-i18n="tasks.task_grasp_lab_object">GraspLabObject</code></td>
           <td class="status done" data-i18n="tasks.status_done">已实现</td>
-          <td class="nowrap">grasp / object pose</td>
-          <td>grasp success, object displacement, collision, steps</td>
+          <td class="nowrap" data-i18n="tasks.state_grasp_pose">grasp / object pose</td>
+          <td data-i18n="tasks.metrics_grasp">grasp success, object displacement, collision, steps</td>
         </tr>
         <tr>
-          <td><code>TransportHeldObject</code></td>
-          <td class="status done" data-i18n="tasks.status_done">已实现</td>
-          <td class="nowrap">held object pose / trajectory</td>
-          <td>success, target pose error, orientation error, smoothness, collision</td>
-        </tr>
-        <tr>
-          <td><code>OpenArticulatedEquipment</code></td>
-          <td class="status done" data-i18n="tasks.status_done">已实现</td>
-          <td class="nowrap"><code>equipment_state</code>: door angle, open/close, temperature, contains</td>
-          <td>success, door angle, handle distance, collision, steps</td>
-        </tr>
-        <tr>
-          <td><code>PressOrToggleInstrumentControl</code></td>
+          <td><code data-i18n="tasks.task_transport_held_object">TransportHeldObject</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>equipment_state</code> / <code>control_state</code></td>
-          <td>success, control state error, contact force proxy, collision</td>
+          <td class="nowrap" data-i18n="tasks.state_held_object">held object pose / trajectory</td>
+          <td data-i18n="tasks.metrics_transport">success, target pose error, orientation error, smoothness, collision</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_open_articulated_equipment">OpenArticulatedEquipment</code></td>
+          <td class="status done" data-i18n="tasks.status_done">已实现</td>
+          <td class="nowrap" data-i18n-html="tasks.state_equipment_door"><code>equipment_state</code>: door angle, open/close, temperature, contains</td>
+          <td data-i18n="tasks.metrics_open_equipment">success, door angle, handle distance, collision, steps</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_press_or_toggle_instrument_control">PressOrToggleInstrumentControl</code></td>
+          <td class="status partial" data-i18n="tasks.status_partial">部分实现</td>
+          <td class="nowrap" data-i18n-html="tasks.state_control"><code>equipment_state</code> / <code>control_state</code></td>
+          <td data-i18n="tasks.metrics_control">success, control state error, contact force proxy, collision</td>
         </tr>
       </tbody>
     </table>
-    <div class="deck-footer"><span class="dim2">level 1</span><span class="slide-number" data-current="2" data-total="5"></span></div>
-    <div class="notes">这一页只讲基础动作任务，不展开多余背景。</div>
+    <div class="deck-footer"><span class="dim2" data-i18n="tasks.footer_level1">level 1</span><span class="slide-number" data-current="2" data-total="5"></span></div>
+    <div class="notes" data-i18n="tasks.note_level1">这一页只讲基础动作任务，不展开多余背景。</div>
   </section>
 
   <section class="slide" data-title="Level 2">
@@ -133,57 +133,57 @@
       </thead>
       <tbody>
         <tr>
-          <td><code>RetrieveContainer</code></td>
-          <td class="status partial" data-i18n="tasks.status_partial">部分实现</td>
-          <td class="nowrap"><code>container_state</code> + <code>sample_state</code> + <code>equipment_state</code></td>
-          <td>success, sample identity, container pose error, wrong sample count, protocol completion, collision</td>
-        </tr>
-        <tr>
-          <td><code>TransferLiquid</code></td>
-          <td class="status partial" data-i18n="tasks.status_partial">部分实现</td>
-          <td class="nowrap"><code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
-          <td>success, volume error, relative volume error, sample identity, contamination, tip reuse</td>
-        </tr>
-        <tr>
-          <td><code>MountDisposableTip</code></td>
+          <td><code data-i18n="tasks.task_retrieve_container">RetrieveContainer</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>pipette_state</code> + contamination</td>
-          <td>success, tip attachment, tip reuse violation, contamination</td>
+          <td class="nowrap" data-i18n-html="tasks.state_container_sample_equipment"><code>container_state</code> + <code>sample_state</code> + <code>equipment_state</code></td>
+          <td data-i18n="tasks.metrics_retrieve_container">success, sample identity, container pose error, wrong sample count, protocol completion, collision</td>
         </tr>
         <tr>
-          <td><code>EjectDisposableTip</code></td>
+          <td><code data-i18n="tasks.task_transfer_liquid">TransferLiquid</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>pipette_state</code> + contamination</td>
-          <td>success, tip ejection, contamination</td>
+          <td class="nowrap" data-i18n-html="tasks.state_container_sample_pipette"><code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
+          <td data-i18n="tasks.metrics_transfer_liquid">success, volume error, relative volume error, sample identity, contamination, tip reuse</td>
         </tr>
         <tr>
-          <td><code>PlaceContainerInStorage</code></td>
+          <td><code data-i18n="tasks.task_mount_disposable_tip">MountDisposableTip</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>container_state</code> + <code>sample_state</code> + <code>equipment_state</code></td>
-          <td>success, container pose error, temperature zone violation, collision</td>
+          <td class="nowrap" data-i18n-html="tasks.state_pipette_contamination"><code>pipette_state</code> + contamination</td>
+          <td data-i18n="tasks.metrics_mount_tip">success, tip attachment, tip reuse violation, contamination</td>
         </tr>
         <tr>
-          <td><code>MixSample</code></td>
+          <td><code data-i18n="tasks.task_eject_disposable_tip">EjectDisposableTip</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>sample_state</code> + <code>container_state</code> + <code>equipment_state</code></td>
-          <td>success, mix completion, contamination, volume error</td>
+          <td class="nowrap" data-i18n-html="tasks.state_pipette_contamination"><code>pipette_state</code> + contamination</td>
+          <td data-i18n="tasks.metrics_eject_tip">success, tip ejection, contamination</td>
         </tr>
         <tr>
-          <td><code>CapOrSealContainer</code></td>
+          <td><code data-i18n="tasks.task_place_container_in_storage">PlaceContainerInStorage</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>container_state</code> + contamination</td>
-          <td>success, cap state success, displacement, contamination</td>
+          <td class="nowrap" data-i18n-html="tasks.state_container_sample_equipment"><code>container_state</code> + <code>sample_state</code> + <code>equipment_state</code></td>
+          <td data-i18n="tasks.metrics_place_storage">success, container pose error, temperature zone violation, collision</td>
         </tr>
         <tr>
-          <td><code>ScanOrInspectSample</code></td>
+          <td><code data-i18n="tasks.task_mix_sample">MixSample</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap"><code>sample_state</code> + <code>equipment_state</code></td>
-          <td>success, inspection pose error, observation quality proxy</td>
+          <td class="nowrap" data-i18n-html="tasks.state_sample_container_equipment"><code>sample_state</code> + <code>container_state</code> + <code>equipment_state</code></td>
+          <td data-i18n="tasks.metrics_mix_sample">success, mix completion, contamination, volume error</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_cap_or_seal_container">CapOrSealContainer</code></td>
+          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="nowrap" data-i18n-html="tasks.state_container_contamination"><code>container_state</code> + contamination</td>
+          <td data-i18n="tasks.metrics_cap_container">success, cap state success, displacement, contamination</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_scan_or_inspect_sample">ScanOrInspectSample</code></td>
+          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="nowrap" data-i18n-html="tasks.state_sample_equipment"><code>sample_state</code> + <code>equipment_state</code></td>
+          <td data-i18n="tasks.metrics_scan_sample">success, inspection pose error, observation quality proxy</td>
         </tr>
       </tbody>
     </table>
-    <div class="deck-footer"><span class="dim2">level 2</span><span class="slide-number" data-current="3" data-total="5"></span></div>
-    <div class="notes">这一页只保留已实现和未实现，不再解释背景。</div>
+    <div class="deck-footer"><span class="dim2" data-i18n="tasks.footer_level2">level 2</span><span class="slide-number" data-current="3" data-total="5"></span></div>
+    <div class="notes" data-i18n="tasks.note_level2">这一页只保留已实现和未实现，不再解释背景。</div>
   </section>
 
   <section class="slide" data-title="Level 3">
@@ -200,74 +200,76 @@
       </thead>
       <tbody>
         <tr>
-          <td><code>RetrieveAndTransferSample</code></td>
-          <td class="status partial" data-i18n="tasks.status_partial">部分实现</td>
-          <td class="nowrap">sequence protocol + <code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
-          <td>protocol completion, progress score, volume error, wrong sample, contamination, episode steps</td>
-        </tr>
-        <tr>
-          <td><code>PrepareDilutionSeries</code></td>
-          <td class="status partial" data-i18n="tasks.status_partial">部分实现</td>
-          <td class="nowrap">multi-step protocol + <code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
-          <td>protocol completion, progress score, cumulative volume error, sample identity, contamination</td>
-        </tr>
-        <tr>
-          <td><code>PipettingWorkflowWithTipChange</code></td>
+          <td><code data-i18n="tasks.task_retrieve_and_transfer_sample">RetrieveAndTransferSample</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap">multi-sample protocol + tip-change rules</td>
-          <td>protocol completion, tip reuse violation, contamination, volume error</td>
+          <td class="nowrap" data-i18n-html="tasks.state_sequence_protocol">sequence protocol + <code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
+          <td data-i18n="tasks.metrics_retrieve_transfer">protocol completion, progress score, volume error, wrong sample, contamination, episode steps</td>
         </tr>
         <tr>
-          <td><code>SampleStorageProtocol</code></td>
+          <td><code data-i18n="tasks.task_prepare_dilution_series">PrepareDilutionSeries</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap">storage sequence + temperature constraints</td>
-          <td>protocol completion, sample identity, temperature zone violation, exposure time</td>
+          <td class="nowrap" data-i18n-html="tasks.state_multistep_protocol">multi-step protocol + <code>container_state</code> + <code>sample_state</code> + <code>pipette_state</code></td>
+          <td data-i18n="tasks.metrics_dilution_series">protocol completion, progress score, cumulative volume error, sample identity, contamination</td>
         </tr>
         <tr>
-          <td><code>MediaChangeSimplified</code></td>
+          <td><code data-i18n="tasks.task_pipetting_workflow_with_tip_change">PipettingWorkflowWithTipChange</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap">media-change protocol + liquid semantics</td>
-          <td>protocol completion, media volume error, contamination, incubator state success</td>
+          <td class="nowrap" data-i18n="tasks.state_tip_change_protocol">multi-sample protocol + tip-change rules</td>
+          <td data-i18n="tasks.metrics_tip_change_workflow">protocol completion, tip reuse violation, contamination, volume error</td>
         </tr>
         <tr>
-          <td><code>PCRPlatePreparation</code></td>
+          <td><code data-i18n="tasks.task_sample_storage_protocol">SampleStorageProtocol</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap">plate assignment protocol + tip policy</td>
-          <td>protocol completion, well assignment accuracy, volume error, contamination</td>
+          <td class="nowrap" data-i18n="tasks.state_storage_protocol">storage sequence + temperature constraints</td>
+          <td data-i18n="tasks.metrics_storage_protocol">protocol completion, sample identity, temperature zone violation, exposure time</td>
         </tr>
         <tr>
-          <td><code>DeviceIncubationWorkflow</code></td>
+          <td><code data-i18n="tasks.task_media_change_simplified">MediaChangeSimplified</code></td>
           <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
-          <td class="nowrap">device state + timing/temperature protocol</td>
-          <td>protocol completion, equipment state error, timing violation, temperature zone violation</td>
+          <td class="nowrap" data-i18n="tasks.state_media_change">media-change protocol + liquid semantics</td>
+          <td data-i18n="tasks.metrics_media_change">protocol completion, media volume error, contamination, incubator state success</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_p_c_r_plate_preparation">PCRPlatePreparation</code></td>
+          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="nowrap" data-i18n="tasks.state_plate_protocol">plate assignment protocol + tip policy</td>
+          <td data-i18n="tasks.metrics_plate_prep">protocol completion, well assignment accuracy, volume error, contamination</td>
+        </tr>
+        <tr>
+          <td><code data-i18n="tasks.task_device_incubation_workflow">DeviceIncubationWorkflow</code></td>
+          <td class="status todo" data-i18n="tasks.status_todo">未实现</td>
+          <td class="nowrap" data-i18n="tasks.state_device_protocol">device state + timing/temperature protocol</td>
+          <td data-i18n="tasks.metrics_device_workflow">protocol completion, equipment state error, timing violation, temperature zone violation</td>
         </tr>
       </tbody>
     </table>
-    <div class="deck-footer"><span class="dim2">level 3</span><span class="slide-number" data-current="4" data-total="5"></span></div>
-    <div class="notes">这一页只保留长流程任务和它们的状态、指标、输出格式。</div>
+    <div class="deck-footer"><span class="dim2" data-i18n="tasks.footer_level3">level 3</span><span class="slide-number" data-current="4" data-total="5"></span></div>
+    <div class="notes" data-i18n="tasks.note_level3">这一页只保留长流程任务和它们的状态、指标、输出格式。</div>
   </section>
 
   <section class="slide" data-title="Output Format">
     <p class="kicker" data-i18n="tasks.output_kicker">Output format</p>
     <h2 class="h2" data-i18n="tasks.output_title">统一输出格式</h2>
     <div class="output-box">
-      <h4>episode_xxxxxx/</h4>
+      <h4 data-i18n="tasks.output_root">episode_xxxxxx/</h4>
       <ul class="output-tree">
-        <li>├── task_config.yaml</li>
-        <li>├── observations.npz</li>
-        <li>├── actions.csv</li>
-        <li>├── joint.csv</li>
-        <li>├── protocol_state.jsonl</li>
-        <li>├── metrics.csv</li>
-        <li>└── summary.json</li>
+        <li data-i18n="tasks.output_task_config">├── task_config.yaml</li>
+        <li data-i18n="tasks.output_observations">├── observations.npz</li>
+        <li data-i18n="tasks.output_actions">├── actions.csv</li>
+        <li data-i18n="tasks.output_joint">├── joint.csv</li>
+        <li data-i18n="tasks.output_protocol_state">├── protocol_state.jsonl</li>
+        <li data-i18n="tasks.output_metrics">├── metrics.csv</li>
+        <li data-i18n="tasks.output_summary">└── summary.json</li>
       </ul>
     </div>
-    <div class="deck-footer"><span class="dim2">output</span><span class="slide-number" data-current="5" data-total="5"></span></div>
-    <div class="notes">这一页单独放 episode 输出格式，不再和任务层级混在一起。</div>
+    <div class="deck-footer"><span class="dim2" data-i18n="tasks.footer_output">output</span><span class="slide-number" data-current="5" data-total="5"></span></div>
+    <div class="notes" data-i18n="tasks.note_output">这一页单独放 episode 输出格式，不再和任务层级混在一起。</div>
   </section>
 
 </div>
 <script src="assets/scripts/runtime.js"></script>
+<script src="assets/i18n/common.js"></script>
+<script src="assets/i18n/tasks.js"></script>
 <script src="assets/scripts/site_i18n.js"></script>
 </body>
 </html>

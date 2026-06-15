@@ -482,13 +482,13 @@
 <div class="site-header">
   <nav class="page-rail" aria-label="页面导航">
     <a href="index.html" data-i18n="nav.overview">总览</a>
-    <a href="tasks.html" data-i18n="nav.tasks">任务汇报</a>
-    <a href="env_assets.html" class="is-active" data-i18n="nav.assets">资产页</a>
+    <a href="env_assets.html" class="is-active" data-i18n="nav.assets">资产</a>
+    <a href="tasks.html" data-i18n="nav.tasks">任务</a>
   </nav>
   <div class="lang-switch" aria-label="Language switch">
-    <button type="button" data-lang="zh" class="is-active">中文</button>
-    <button type="button" data-lang="ja">日本語</button>
-    <button type="button" data-lang="en">English</button>
+    <button type="button" data-lang="zh" class="is-active" data-i18n="lang.zh">中文</button>
+    <button type="button" data-lang="ja" data-i18n="lang.ja">日本語</button>
+    <button type="button" data-lang="en" data-i18n="lang.en">English</button>
   </div>
 </div>
 <div class="deck">
@@ -521,10 +521,10 @@
     <section class="viewer-area">
       <div class="legend">
         <div class="asset-tabs" aria-label="资产类别筛选">
-          <button class="asset-tab is-active" type="button" data-filter="all"><span data-i18n="assets.filter_all">全部</span><span class="tab-count">19</span></button>
-          <button class="asset-tab" type="button" data-filter="fixed"><span data-i18n="assets.filter_fixed">固定场景</span><span class="tab-count">9</span></button>
+          <button class="asset-tab is-active" type="button" data-filter="all"><span data-i18n="assets.filter_all">全部</span><span class="tab-count">36</span></button>
+          <button class="asset-tab" type="button" data-filter="fixed"><span data-i18n="assets.filter_fixed">固定场景</span><span class="tab-count">25</span></button>
+          <button class="asset-tab" type="button" data-filter="instrument"><span data-i18n="assets.filter_instrument">实验仪器</span><span class="tab-count">9</span></button>
           <button class="asset-tab" type="button" data-filter="movable"><span data-i18n="assets.filter_movable">可移动物品</span><span class="tab-count">2</span></button>
-          <button class="asset-tab" type="button" data-filter="instrument"><span data-i18n="assets.filter_instrument">实验仪器</span><span class="tab-count">8</span></button>
         </div>
       </div>
       <div class="model-grid" id="modelGrid"></div>
@@ -539,6 +539,8 @@
 
 </div>
 <script src="assets/scripts/runtime.js"></script>
+<script src="assets/i18n/common.js"></script>
+<script src="assets/i18n/assets.js"></script>
 <script src="assets/scripts/site_i18n.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -552,143 +554,229 @@ const ROOT = "";
 const SCENE_MODELS = [
   { file: "assets/models/maholo.stl", color: [0.64, 0.58, 0.47], autoFit: true }
 ];
-const MODELS = [
+const ARENA_WORLD_MODELS = [
   {
-    title: "Main workstation", category: "固定场景", status: "done",
-    note: "table_main；主操作工作台。",
-    color: [0.56, 0.49, 0.39],
+    title: "base_robot", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/base_robot.stl"]
+  },
+  {
+    title: "base_centrifuge", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/base_centrifuge.stl"]
+  },
+  {
+    title: "base_deep_freezer", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/base_deep_freezer.stl"]
+  },
+  {
+    title: "table_main", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_main.stl"]
   },
   {
-    title: "Side table R1 / FF", category: "固定场景", status: "done",
-    note: "table_side_R1_FF；右侧前方工作台。",
-    color: [0.52, 0.46, 0.37],
+    title: "table_side_R1_FF", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_side_R1_FF.stl"]
   },
   {
-    title: "Side table R2", category: "固定场景", status: "done",
-    note: "table_side_R2；右侧后方工作台。",
-    color: [0.50, 0.44, 0.36],
+    title: "table_side_R2", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_side_R2.stl"]
   },
   {
-    title: "Incubator table", category: "固定场景", status: "done",
-    note: "table_incubator；培养箱设备台。",
-    color: [0.58, 0.51, 0.41],
+    title: "table_incubator", category: "固定场景", status: "done",
+    note: "arena base/table 使用 maholo_arena01-14 多段 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/maholo_arena/table_incubator.stl"]
   },
   {
-    title: "Pipette rack", category: "固定场景", status: "done",
-    note: "arena 静态 fixture；pipette 本体由 runtime object 加载。",
-    color: [0.44, 0.48, 0.54],
-    files: ["assets/models/arenas/SinglePipetteRack_4.stl"]
+    title: "Safety fence_frame", category: "固定场景", status: "done",
+    note: "使用 19 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/Safety_fence_frame.stl"]
   },
   {
-    title: "1.5 ml tube rack", category: "固定场景", status: "done",
-    note: "有 visual 和分解 collision，可用于 slot / placement 定义。",
-    color: [0.38, 0.54, 0.58],
+    title: "Chip_off", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/Chip_off.stl"]
+  },
+  {
+    title: "SinglePipetteRack_4", category: "固定场景", status: "done",
+    note: "使用 7 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/SinglePipetteRack_4/SinglePipetteRack_4.stl"]
+  },
+  {
+    title: "SinglePipetteRack_5", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/SinglePipetteRack_5.stl"]
+  },
+  {
+    title: "1.5ml_tube_rack", category: "固定场景", status: "done",
+    note: "使用 34 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/1.5ml_tube_rack.stl"]
   },
   {
-    title: "Tube storage 48", category: "固定场景", status: "done",
-    note: "适合定义 sample storage 和 retrieve container 任务。",
-    color: [0.42, 0.56, 0.50],
+    title: "1.5ml_tube_storage48", category: "固定场景", status: "done",
+    note: "使用 59 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
     files: ["assets/models/arenas/1.5ml_tube_storage48.stl"]
   },
   {
-    title: "Tip / chip box", category: "固定场景", status: "todo",
-    note: "几何存在；单个 tip 的 available / used / attached 状态未建模。",
-    color: [0.68, 0.54, 0.31],
-    files: [
-      "assets/models/arenas/ChipBOX_200μl.stl",
-      "assets/models/arenas/ChipBOX_5ml.stl"
-    ]
+    title: "Storage_50mlx6", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/Storage_50mlx6.stl"]
   },
   {
-    title: "固定工具组合", category: "固定场景", status: "done",
-    note: "Opener / Pipette_Push / Centrifuge_tool 当前是静态几何。",
-    color: [0.43, 0.43, 0.43],
-    files: [
-      "assets/models/arenas/maholo_arena/Opener.stl",
-      "assets/models/arenas/maholo_arena/Pipette_Push.stl",
-      "assets/models/arenas/maholo_arena/Centrifuge_tool.stl"
-    ]
+    title: "Storage_15ml-6", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/Storage_15ml-6.stl"]
   },
+  {
+    title: "Workshop_15mlx5", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/Workshop_15mlx5.stl"]
+  },
+  {
+    title: "Workshop_50mlx3", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/Workshop_50mlx3.stl"]
+  },
+  {
+    title: "ChipBOXRack_200μl", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/ChipBOXRack_200ul.stl"]
+  },
+  {
+    title: "ChipBOXRack_1000μl", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/ChipBOXRack_1000ul.stl"]
+  },
+  {
+    title: "ChipBOX_5ml", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/ChipBOX_5ml.stl"]
+  },
+  {
+    title: "ChipBOX_200μl", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/ChipBOX_200ul.stl"]
+  },
+  {
+    title: "Centrifuge_tool", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/Centrifuge_tool.stl"]
+  },
+  {
+    title: "Opener", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/Opener.stl"]
+  },
+  {
+    title: "Pipette_Push", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/Pipette_Push.stl"]
+  },
+  {
+    title: "PCR_PlateMainRack_withCooling", category: "固定场景", status: "done",
+    note: "使用 114 个 collision mesh；冲撞模型已制作。",
+    color: [0.42, 0.56, 0.5],
+    files: ["assets/models/arenas/maholo_arena/PCR_PlateMainRack_withCooling.stl"]
+  }
+];
+const EQUIPMENT_MODELS = [
+  {
+    title: "4°C cool incubator", category: "可交互仪器", status: "done",
+    note: "来自 cool_incubator_4c.xml；2 个 visual mesh；7 个 collision mesh。",
+    color: [0.67, 0.6, 0.48],
+    files: ["assets/models/equipments/cool_incubator_4c/cool_incubator_4c_body_visual.stl", "assets/models/equipments/cool_incubator_4c/cool_incubator_4c_door_visual.stl"]
+  },
+  {
+    title: "CO2 incubator", category: "可交互仪器", status: "done",
+    note: "来自 co2_incubator.xml；4 个 visual mesh；15 个 collision mesh。",
+    color: [0.66, 0.62, 0.52],
+    files: ["assets/models/equipments/co2_incubator/CO2incubator_body_visual.stl", "assets/models/equipments/co2_incubator/CO2incubator_outerdoor_visual.stl", "assets/models/equipments/co2_incubator/CO2incubator_innerdoor_visual.stl", "assets/models/equipments/co2_incubator/CO2incubator_innerlever_visual.stl"]
+  },
+  {
+    title: "Deep freezer", category: "可交互仪器", status: "done",
+    note: "来自 deep_freezer.xml；2 个 visual mesh；5 个 collision mesh。",
+    color: [0.62, 0.66, 0.71],
+    files: ["assets/models/equipments/deep_freezer/deepFreezer_body_visual.stl", "assets/models/equipments/deep_freezer/deepFreezer_door_visual.stl"]
+  },
+  {
+    title: "Thermal cycler", category: "实验仪器", status: "todo",
+    note: "来自 thermal_cycler.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    color: [0.45, 0.45, 0.5],
+    files: ["assets/models/equipments/thermal_cycler/thermal_cycler.stl"]
+  },
+  {
+    title: "MX-307", category: "实验仪器", status: "todo",
+    note: "来自 mx307.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    color: [0.52, 0.52, 0.47],
+    files: ["assets/models/equipments/mx307/mx307.stl"]
+  },
+  {
+    title: "Microtube mixer", category: "实验仪器", status: "todo",
+    note: "来自 microtube_mixer.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    color: [0.42, 0.47, 0.58],
+    files: ["assets/models/equipments/microtube_mixer/microtube_mixer.stl"]
+  },
+  {
+    title: "Vortex mixer", category: "实验仪器", status: "todo",
+    note: "来自 vortex_mixer.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    color: [0.38, 0.49, 0.62],
+    files: ["assets/models/equipments/vortex_mixer/vortex_mixer.stl"]
+  },
+  {
+    title: "Block thermostatic bath", category: "实验仪器", status: "todo",
+    note: "来自 block_thermostatic_bath.xml；1 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    color: [0.52, 0.58, 0.52],
+    files: ["assets/models/equipments/block_thermostatic_bath/block_thermostatic_bath.stl"]
+  },
+  {
+    title: "Cool block bath", category: "实验仪器", status: "todo",
+    note: "来自 cool_block_bath.xml；2 个 visual mesh；尚未形成多段 collision / 交互状态。",
+    color: [0.44, 0.58, 0.64],
+    files: ["assets/models/equipments/cool_block_bath/cool_block_bath.stl", "assets/models/equipments/cool_block_bath/block.stl"]
+  }
+];
+const MOVABLE_MODELS = [
   {
     title: "P1000 pipette", category: "可移动物品", status: "done",
-    note: "4 个默认实例；free joint；64 个 collision mesh。",
-    color: [0.18, 0.50, 0.78],
+    note: "来自 P1000Pipette_withtip.xml；1 个 visual mesh；64 个 collision mesh。",
+    color: [0.18, 0.5, 0.78],
     files: ["assets/models/objects/pipette/pipette.obj"]
   },
   {
     title: "1.5 ml tube", category: "可移动物品", status: "done",
-    note: "8 个默认实例；free joint；可作为样品容器。",
-    color: [0.88, 0.30, 0.26],
+    note: "来自 1.5ml_tube.xml；1 个 visual mesh；2 个 collision mesh。",
+    color: [0.88, 0.3, 0.26],
     files: ["assets/models/objects/1.5ml_tube.stl"]
-  },
-  {
-    title: "4°C cool incubator", category: "可交互仪器", status: "done",
-    note: "body + door；已有 hinge 和开门任务。内部槽位 / 温度状态未完成。",
-    color: [0.67, 0.60, 0.48],
-    files: [
-      "assets/models/objects/cool_incubator_4c/cool_incubator_4c_body_visual.stl",
-      "assets/models/objects/cool_incubator_4c/cool_incubator_4c_door_visual.stl"
-    ]
-  },
-  {
-    title: "CO2 incubator", category: "可交互仪器", status: "done",
-    note: "outer door / inner door / latch 已有关节和多阶段任务。CO2 / 温度语义未完成。",
-    color: [0.66, 0.62, 0.52],
-    files: [
-      "assets/models/objects/co2_incubator/CO2incubator_body_visual.stl",
-      "assets/models/objects/co2_incubator/CO2incubator_outerdoor_visual.stl",
-      "assets/models/objects/co2_incubator/CO2incubator_innerdoor_visual.stl",
-      "assets/models/objects/co2_incubator/CO2incubator_innerlever_visual.stl"
-    ]
-  },
-  {
-    title: "Deep freezer", category: "可交互仪器", status: "done",
-    note: "body + door；已有 hinge 和开门任务。内部存储槽位未完成。",
-    color: [0.62, 0.66, 0.71],
-    files: [
-      "assets/models/objects/deep_freezer/deepFreezer_body_visual.stl",
-      "assets/models/objects/deep_freezer/deepFreezer_door_visual.stl"
-    ]
-  },
-  {
-    title: "Thermal cycler", category: "实验仪器", status: "todo",
-    note: "几何存在；lid joint、program/running state 未完成。",
-    color: [0.45, 0.45, 0.50],
-    files: ["assets/models/objects/thermal_cycler/thermal_cycler.stl"]
-  },
-  {
-    title: "MX-307", category: "实验仪器", status: "todo",
-    note: "几何存在；运行模式和设备状态未完成。",
-    color: [0.52, 0.52, 0.47],
-    files: ["assets/models/objects/mx307/mx307.stl"]
-  },
-  {
-    title: "Microtube mixer", category: "实验仪器", status: "todo",
-    note: "几何存在；mixing / running / duration 状态未完成。",
-    color: [0.42, 0.47, 0.58],
-    files: ["assets/models/objects/microtube_mixer/microtube_mixer.stl"]
-  },
-  {
-    title: "Vortex mixer", category: "实验仪器", status: "todo",
-    note: "几何存在；press / activation 状态未完成。",
-    color: [0.38, 0.49, 0.62],
-    files: ["assets/models/objects/vortex_mixer/vortex_mixer.stl"]
-  },
-  {
-    title: "Block baths", category: "实验仪器", status: "todo",
-    note: "block thermostatic bath / cool block bath；温度和占用状态未完成。",
-    color: [0.52, 0.58, 0.52],
-    files: [
-      "assets/models/objects/block_thermostatic_bath/block_thermostatic_bath.stl",
-      "assets/models/objects/cool_block_bath/cool_block_bath.stl"
-    ]
   }
 ];
+const MODELS = [...ARENA_WORLD_MODELS, ...EQUIPMENT_MODELS, ...MOVABLE_MODELS];
 
 const sceneCanvas = document.getElementById("sceneCanvas");
 if (sceneCanvas) createSceneViewer(sceneCanvas, SCENE_MODELS);
@@ -699,6 +787,11 @@ function assetGroup(category) {
   if (category === "固定场景") return "fixed";
   if (category === "可移动物品") return "movable";
   return "instrument";
+}
+function assetCategoryKey(group) {
+  if (group === "fixed") return "assets.category_fixed";
+  if (group === "movable") return "assets.category_movable";
+  return "assets.category_instrument";
 }
 function loadAssetPreview(canvas) {
   if (canvas.dataset.loaded === "1") return;
@@ -748,9 +841,11 @@ const modelSlots = Array.from({ length: MODELS.length }, (_, index) => {
 });
 for (let i = 0; i < MODELS.length; i++) {
   const spec = MODELS[i];
+  const group = assetGroup(spec.category);
+  const statusKey = spec.status === "done" ? "assets.status_done" : "assets.status_todo";
   const card = document.createElement("article");
   card.className = "model";
-  card.dataset.group = assetGroup(spec.category);
+  card.dataset.group = group;
   modelSlots[i].dataset.group = card.dataset.group;
   const canvas = document.createElement("canvas");
   canvas.dataset.modelIndex = String(i);
@@ -759,9 +854,9 @@ for (let i = 0; i < MODELS.length; i++) {
   meta.innerHTML = `
     <div class="model-top">
       <h3>${spec.title}</h3>
-      <span class="mini ${spec.status === "done" ? "done" : "todo"}">${spec.status === "done" ? "DONE" : "NOT DONE"}</span>
+      <span class="mini ${spec.status === "done" ? "done" : "todo"}" data-i18n="${statusKey}">${spec.status === "done" ? "DONE" : "NOT DONE"}</span>
     </div>
-    <p><strong>${spec.category}</strong></p>`;
+    <p><strong data-i18n="${assetCategoryKey(group)}">${spec.category}</strong></p>`;
   card.append(canvas, meta);
   modelCards.push(card);
   if (previewObserver) {
@@ -773,6 +868,9 @@ for (let i = 0; i < MODELS.length; i++) {
 }
 grid.replaceChildren(...modelSlots);
 applyAssetFilter("all");
+if (window.MaholoSiteI18n) {
+  window.MaholoSiteI18n.translate(grid, window.MaholoSiteI18n.getLang());
+}
 for (const tab of tabs) {
   tab.addEventListener("click", () => applyAssetFilter(tab.dataset.filter));
 }
